@@ -29,15 +29,8 @@ export default async function MessagesPage() {
     redirect("/auth/login")
   }
 
-  // 在页面顶部添加一个调试日志
-  console.log("=== 消息页面调试信息 ===")
-  console.log("当前用户:", user)
-  console.log("当前用户ID:", user?.id)
-
   // 获取用户的聊天列表并按最后消息时间排序
   const userChats = await getUserChats(user.id)
-  console.log("获取到的聊天列表数量:", userChats.length)
-  console.log("聊天列表详情:", userChats)
 
   const sortedChats = userChats.sort((a, b) => {
     const timeA = a.lastMessage?.timestamp.getTime() || 0
@@ -45,21 +38,17 @@ export default async function MessagesPage() {
     return timeB - timeA // 最新的在前面
   })
 
+  // 只显示最近的5条聊天记录
+  const recentChats = sortedChats.slice(0, 5)
+
   // 获取每个聊天的联系人信息
   const chatsWithContacts = await Promise.all(
-    sortedChats.map(async (chat) => {
-      console.log("处理聊天:", chat.id, "参与者:", chat.participants)
+    recentChats.map(async (chat) => {
       const otherParticipantId = chat.participants.find((id) => id !== user.id)
-      console.log("其他参与者ID:", otherParticipantId)
-
       const contact = otherParticipantId ? await getContactById(otherParticipantId) : null
-      console.log("找到的联系人:", contact)
-
       return { chat, contact }
     }),
   )
-
-  console.log("最终聊天和联系人数据:", chatsWithContacts)
 
   return (
     <div className="flex flex-col h-screen pb-20">
@@ -95,6 +84,15 @@ export default async function MessagesPage() {
               online={contact?.online || false}
             />
           ))
+        )}
+
+        {/* 如果有更多聊天记录，显示查看更多按钮 */}
+        {sortedChats.length > 5 && (
+          <div className="p-4 text-center border-t">
+            <Link href="/messages/all" className="text-primary text-sm hover:underline">
+              查看更多聊天记录 ({sortedChats.length - 5} 条)
+            </Link>
+          </div>
         )}
       </div>
     </div>
