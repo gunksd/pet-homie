@@ -1,5 +1,6 @@
-import { getCurrentUser } from "@/lib/auth"
-import { redirect } from "next/navigation"
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,17 +9,29 @@ import { ArrowLeft, Search, Heart, MapPin } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
-export default async function AdoptionPage() {
-  const user = await getCurrentUser()
-  if (!user) {
-    redirect("/auth/login")
-  }
+interface Pet {
+  id: string
+  name: string
+  type: "dog" | "cat" | "other"
+  breed: string
+  age: string
+  gender: "公" | "母"
+  location: string
+  image: string
+  description: string
+  vaccinated: boolean
+  sterilized: boolean
+}
 
-  const pets = [
+export default function AdoptionPage() {
+  const [searchQuery, setSearchQuery] = useState("")
+  const [activeCategory, setActiveCategory] = useState("all")
+
+  const pets: Pet[] = [
     {
       id: "1",
       name: "小白",
-      type: "狗",
+      type: "dog",
       breed: "金毛",
       age: "2岁",
       gender: "公",
@@ -31,7 +44,7 @@ export default async function AdoptionPage() {
     {
       id: "2",
       name: "小花",
-      type: "猫",
+      type: "cat",
       breed: "英短",
       age: "1岁",
       gender: "母",
@@ -44,7 +57,7 @@ export default async function AdoptionPage() {
     {
       id: "3",
       name: "豆豆",
-      type: "狗",
+      type: "dog",
       breed: "柴犬",
       age: "3岁",
       gender: "公",
@@ -57,7 +70,7 @@ export default async function AdoptionPage() {
     {
       id: "4",
       name: "咪咪",
-      type: "猫",
+      type: "cat",
       breed: "橘猫",
       age: "6个月",
       gender: "母",
@@ -70,7 +83,7 @@ export default async function AdoptionPage() {
     {
       id: "5",
       name: "黑豆",
-      type: "狗",
+      type: "dog",
       breed: "拉布拉多",
       age: "4岁",
       gender: "公",
@@ -80,7 +93,30 @@ export default async function AdoptionPage() {
       vaccinated: true,
       sterilized: true,
     },
+    {
+      id: "6",
+      name: "雪球",
+      type: "other",
+      breed: "荷兰猪",
+      age: "1岁",
+      gender: "母",
+      location: "上海市徐汇区",
+      image: "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=400&h=400&fit=crop",
+      description: "可爱的小荷兰猪，很适合小朋友饲养",
+      vaccinated: false,
+      sterilized: false,
+    },
   ]
+
+  // 过滤宠物
+  const filteredPets = pets.filter((pet) => {
+    const matchesCategory = activeCategory === "all" || pet.type === activeCategory
+    const matchesSearch =
+      pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pet.breed.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pet.location.toLowerCase().includes(searchQuery.toLowerCase())
+    return matchesCategory && matchesSearch
+  })
 
   return (
     <div className="flex flex-col pb-20">
@@ -99,10 +135,15 @@ export default async function AdoptionPage() {
 
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="搜索宠物品种、地区..." className="pl-9 rounded-full" />
+          <Input
+            placeholder="搜索宠物品种、地区..."
+            className="pl-9 rounded-full"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
 
-        <Tabs defaultValue="all" className="mb-4">
+        <Tabs value={activeCategory} onValueChange={setActiveCategory} className="mb-4">
           <TabsList className="grid grid-cols-4 h-9">
             <TabsTrigger value="all">全部</TabsTrigger>
             <TabsTrigger value="dog">狗狗</TabsTrigger>
@@ -112,7 +153,7 @@ export default async function AdoptionPage() {
         </Tabs>
 
         <div className="grid grid-cols-1 gap-4">
-          {pets.map((pet) => (
+          {filteredPets.map((pet) => (
             <Card key={pet.id} className="overflow-hidden">
               <div className="flex">
                 <div className="relative w-32 h-32">
@@ -147,14 +188,22 @@ export default async function AdoptionPage() {
                       <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">已绝育</span>
                     )}
                   </div>
-                  <Button size="sm" className="w-full">
-                    了解详情
-                  </Button>
+                  <Link href={`/adoption/${pet.id}`}>
+                    <Button size="sm" className="w-full">
+                      了解详情
+                    </Button>
+                  </Link>
                 </CardContent>
               </div>
             </Card>
           ))}
         </div>
+
+        {filteredPets.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">没有找到符合条件的宠物</p>
+          </div>
+        )}
       </div>
     </div>
   )
