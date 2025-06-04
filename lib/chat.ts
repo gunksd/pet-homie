@@ -37,57 +37,57 @@ export interface User {
   avatar?: string
 }
 
-// 模拟数据库 - 添加更多联系人，确保每个联系人都有独特的名称和头像
+// 硬编码联系人数据，使用真实的头像图片
 const contacts: Contact[] = [
   {
     id: "doctor_chen",
-    name: "陈医生",
+    name: "陈志华医生",
     avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
     online: true,
   },
   {
     id: "user_bingyi",
-    name: "冰一",
+    name: "李冰一",
     avatar: "https://images.unsplash.com/photo-1494790108755-2616c9c9b8d4?w=150&h=150&fit=crop&crop=face",
     online: false,
     lastSeen: new Date("2025-06-04T10:47:00"),
   },
   {
     id: "vet_li",
-    name: "李兽医",
+    name: "王晓明兽医",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     online: true,
   },
   {
     id: "ai_assistant",
     name: "AI宠物助手",
-    avatar: "https://images.unsplash.com/photo-1679958157996-3c1d7c1c0a88?w=150&h=150&fit=crop&crop=face",
+    avatar: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=150&h=150&fit=crop&crop=face",
     online: true,
   },
   {
     id: "pet_shop",
-    name: "宠物商店客服",
-    avatar: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=150&h=150&fit=crop&crop=face",
+    name: "张小雅客服",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
     online: true,
   },
   {
     id: "adoption_center",
-    name: "领养中心小李",
-    avatar: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=150&h=150&fit=crop&crop=face",
+    name: "刘美丽",
+    avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face",
     online: false,
     lastSeen: new Date("2025-06-04T14:20:00"),
   },
   {
     id: "groomer_wang",
-    name: "美容师小王",
-    avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face",
+    name: "赵小王",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
     online: false,
     lastSeen: new Date("2025-06-03T16:30:00"),
   },
   {
     id: "neighbor_zhang",
-    name: "邻居张阿姨",
-    avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face",
+    name: "张阿姨",
+    avatar: "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150&h=150&fit=crop&crop=face",
     online: false,
     lastSeen: new Date("2025-06-04T09:15:00"),
   },
@@ -115,7 +115,7 @@ const messages: Message[] = [
     read: true,
   },
 
-  // 与冰一的对话
+  // 与李冰一的对话
   {
     id: "msg_3",
     chatId: "chat_2",
@@ -256,6 +256,35 @@ const messages: Message[] = [
     type: "text",
     read: true,
   },
+
+  // 与兽医王晓明的对话
+  {
+    id: "msg_vet_1",
+    chatId: "chat_vet",
+    senderId: "vet_li",
+    content: "您好，关于豆豆的疫苗接种，建议下周二过来",
+    timestamp: new Date("2025-06-04T15:30:00"),
+    type: "text",
+    read: false,
+  },
+  {
+    id: "msg_vet_2",
+    chatId: "chat_vet",
+    senderId: "1",
+    content: "好的，大概几点比较合适？",
+    timestamp: new Date("2025-06-04T15:35:00"),
+    type: "text",
+    read: true,
+  },
+  {
+    id: "msg_vet_3",
+    chatId: "chat_vet",
+    senderId: "vet_li",
+    content: "上午10点到11点之间都可以，记得带上疫苗本",
+    timestamp: new Date("2025-06-04T15:40:00"),
+    type: "text",
+    read: false,
+  },
 ]
 
 // 更新聊天列表 - 修复消息引用
@@ -291,6 +320,22 @@ const chats: Chat[] = [
     unreadCount: 1,
     createdAt: new Date("2025-06-04T16:00:00"),
     updatedAt: new Date("2025-06-04T16:22:00"),
+  },
+  {
+    id: "chat_vet",
+    participants: ["1", "vet_li"],
+    lastMessage: {
+      id: "msg_vet_3",
+      chatId: "chat_vet",
+      senderId: "vet_li",
+      content: "上午10点到11点之间都可以，记得带上疫苗本",
+      timestamp: new Date("2025-06-04T15:40:00"),
+      type: "text",
+      read: false,
+    },
+    unreadCount: 2,
+    createdAt: new Date("2025-06-04T15:00:00"),
+    updatedAt: new Date("2025-06-04T15:40:00"),
   },
   {
     id: "chat_adoption",
