@@ -257,7 +257,7 @@ const messages: Message[] = [
     read: true,
   },
 
-  // 与兽医王晓明的对话 - 修复chatId
+  // 与兽医王晓明的对话
   {
     id: "msg_vet_1",
     chatId: "chat_vet_li",
@@ -287,23 +287,23 @@ const messages: Message[] = [
   },
 ]
 
-// 更新聊天列表 - 修复消息引用
+// 聊天列表 - 确保participants中的ID与contacts中的ID完全匹配
 const chats: Chat[] = [
   {
     id: "chat_1",
     participants: ["1", "doctor_chen"],
     lastMessage: {
-      id: "msg_2",
+      id: "msg_1",
       chatId: "chat_1",
-      senderId: "1",
-      content: "下午2点可以吗？",
-      timestamp: new Date("2025-06-04T11:05:00"),
+      senderId: "doctor_chen",
+      content: "您好，我现在有空，什么时候能带您家狗狗过来呢？",
+      timestamp: new Date("2025-06-04T11:00:00"),
       type: "text",
-      read: true,
+      read: false,
     },
     unreadCount: 1,
     createdAt: new Date("2025-06-04T10:00:00"),
-    updatedAt: new Date("2025-06-04T11:05:00"),
+    updatedAt: new Date("2025-06-04T11:00:00"),
   },
   {
     id: "chat_shop",
@@ -341,17 +341,17 @@ const chats: Chat[] = [
     id: "chat_adoption",
     participants: ["1", "adoption_center"],
     lastMessage: {
-      id: "msg_9",
+      id: "msg_8",
       chatId: "chat_adoption",
-      senderId: "1",
-      content: "好的，我明天下午有时间",
-      timestamp: new Date("2025-06-04T14:25:00"),
+      senderId: "adoption_center",
+      content: "感谢您对小白的关注，请问您方便明天来看看它吗？",
+      timestamp: new Date("2025-06-04T14:20:00"),
       type: "text",
-      read: true,
+      read: false,
     },
     unreadCount: 1,
     createdAt: new Date("2025-06-04T14:00:00"),
-    updatedAt: new Date("2025-06-04T14:25:00"),
+    updatedAt: new Date("2025-06-04T14:20:00"),
   },
   {
     id: "chat_ai",
@@ -374,17 +374,17 @@ const chats: Chat[] = [
     id: "chat_2",
     participants: ["1", "user_bingyi"],
     lastMessage: {
-      id: "msg_4",
+      id: "msg_3",
       chatId: "chat_2",
-      senderId: "1",
-      content: "小橘最近状态很好，食欲也恢复了",
-      timestamp: new Date("2025-06-04T10:50:00"),
+      senderId: "user_bingyi",
+      content: "猫猫的健康状态怎么样了呢",
+      timestamp: new Date("2025-06-04T10:47:00"),
       type: "text",
-      read: true,
+      read: false,
     },
     unreadCount: 1,
     createdAt: new Date("2025-06-04T09:00:00"),
-    updatedAt: new Date("2025-06-04T10:50:00"),
+    updatedAt: new Date("2025-06-04T10:47:00"),
   },
   {
     id: "chat_groomer",
@@ -426,7 +426,7 @@ export async function getUserChats(userId: string): Promise<Chat[]> {
   console.log("查询用户聊天列表，用户ID:", userId)
   console.log("所有聊天数据:", chats)
 
-  // 强制返回所有聊天用于调试
+  // 返回所有聊天用于调试
   console.log("返回所有聊天进行调试")
   return chats
 }
