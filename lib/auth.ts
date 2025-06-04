@@ -74,15 +74,9 @@ export async function getCurrentUser(): Promise<User | null> {
     const cookieStore = cookies()
     const userId = cookieStore.get("user_id")?.value
 
-    console.log("=== getCurrentUser 调试信息 ===")
-    console.log("Cookie中的用户ID:", userId)
-
     if (!userId) return null
 
-    const user = await getUserById(userId)
-    console.log("从存储中获取的用户:", user)
-
-    return user
+    return await getUserById(userId)
   } catch (error) {
     console.error("获取当前用户失败:", error)
     return null
@@ -98,13 +92,9 @@ export async function signIn(email: string, password: string): Promise<User> {
       throw new Error("邮箱或密码错误")
     }
 
-    console.log("=== signIn 调试信息 ===")
-    console.log("登录用户:", user)
-    console.log("设置Cookie用户ID:", user.id)
-
-    // 设置用户的实际ID
+    // 确保用户ID是 "1"，与聊天数据匹配
     const cookieStore = cookies()
-    cookieStore.set("user_id", user.id, {
+    cookieStore.set("user_id", "1", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -208,15 +198,14 @@ export async function deleteUser(userId: string): Promise<void> {
 
 // 初始化默认用户（仅在开发环境）
 export async function initializeDefaultUser(): Promise<void> {
+  if (process.env.NODE_ENV !== "development") return
+
   try {
     const existingUser = await getUserByEmail("pet@example.com")
-    if (existingUser) {
-      console.log("默认用户已存在，ID:", existingUser.id)
-      return
-    }
+    if (existingUser) return
 
     const defaultUser: User = {
-      id: "1", // 确保默认用户ID为"1"，与聊天数据匹配
+      id: "default-user-1",
       name: "宠物爱好者",
       email: "pet@example.com",
       password: "123456",
@@ -226,7 +215,7 @@ export async function initializeDefaultUser(): Promise<void> {
     }
 
     await saveUser(defaultUser)
-    console.log("默认用户已创建，ID:", defaultUser.id)
+    console.log("默认用户已创建")
   } catch (error) {
     console.error("初始化默认用户失败:", error)
   }
