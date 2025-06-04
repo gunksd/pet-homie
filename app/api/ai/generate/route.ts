@@ -6,13 +6,20 @@ export async function POST(request: Request) {
     const { userMessage } = await request.json()
 
     if (!userMessage) {
-      return NextResponse.json({ error: "缺少用户消息" }, { status: 400 })
+      return NextResponse.json({ error: "用户消息不能为空" }, { status: 400 })
     }
 
+    console.log("生成AI回复，用户消息:", userMessage)
+
+    // 调用AI生成回复
     const response = await generateAIResponse(userMessage)
+
+    console.log("AI回复生成成功:", response.slice(0, 50) + "...")
+
     return NextResponse.json({ response })
   } catch (error) {
-    console.error("生成AI回复失败:", error)
-    return NextResponse.json({ error: "生成AI回复失败" }, { status: 500 })
+    console.error("AI回复生成失败:", error)
+
+    return NextResponse.json({ error: "生成AI回复失败", details: (error as Error).message }, { status: 500 })
   }
 }

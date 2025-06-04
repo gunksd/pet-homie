@@ -6,12 +6,14 @@ import { createOpenAI } from "@ai-sdk/openai"
 // 创建DeepSeek客户端
 const deepseek = createOpenAI({
   baseURL: "https://api.deepseek.com",
-  apiKey: "sk-2521687cd38b4b958f38742347399297",
+  apiKey: process.env.DEEPSEEK_API_KEY || "sk-2521687cd38b4b958f38742347399297",
 })
 
 // 生成AI回复
 export async function generateAIResponse(userMessage: string): Promise<string> {
   try {
+    console.log("调用DeepSeek API生成回复...")
+
     const prompt = `你是一位专业的宠物医生AI助手，名叫"AI宠物助手"。你的特点：
 - 专业：具备丰富的宠物医疗和护理知识
 - 友好：语气温和亲切，像朋友一样关心宠物主人
@@ -29,6 +31,7 @@ export async function generateAIResponse(userMessage: string): Promise<string> {
       temperature: 0.8,
     })
 
+    console.log("DeepSeek API调用成功")
     return text
   } catch (error) {
     console.error("生成AI回复失败:", error)

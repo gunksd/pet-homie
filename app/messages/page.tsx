@@ -8,16 +8,16 @@ import { MessageListItem } from "@/components/message-list-item"
 // 硬编码的联系人数据，做演示用
 const mockContacts = [
   {
-    id: "chat_ai",
+    id: "chat_ai", // AI助手的聊天ID
     avatar: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=150&h=150&fit=crop&crop=face",
     name: "AI宠物助手",
-    message: "这种情况建议：🔍 先测量体温（正常37.5-39°C）；🥄 可以尝试用温水泡软狗粮...",
+    message: "有什么宠物问题需要咨询吗？我很乐意帮助您！",
     time: "19:42",
     unreadCount: 0,
     online: true,
   },
   {
-    id: "chat_vet",
+    id: "chat_vet_li", // 兽医的聊天ID
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     name: "王晓明兽医",
     message: "上午10点到11点之间都可以，记得带上疫苗本",
