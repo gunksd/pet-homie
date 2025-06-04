@@ -92,9 +92,9 @@ export async function signIn(email: string, password: string): Promise<User> {
       throw new Error("邮箱或密码错误")
     }
 
-    // 确保用户ID是 "1"，与聊天数据匹配
+    // 设置用户的实际ID，而不是硬编码的"1"
     const cookieStore = cookies()
-    cookieStore.set("user_id", "1", {
+    cookieStore.set("user_id", user.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -198,14 +198,15 @@ export async function deleteUser(userId: string): Promise<void> {
 
 // 初始化默认用户（仅在开发环境）
 export async function initializeDefaultUser(): Promise<void> {
-  if (process.env.NODE_ENV !== "development") return
-
   try {
     const existingUser = await getUserByEmail("pet@example.com")
-    if (existingUser) return
+    if (existingUser) {
+      console.log("默认用户已存在")
+      return
+    }
 
     const defaultUser: User = {
-      id: "default-user-1",
+      id: "1", // 确保默认用户ID为"1"，与聊天数据匹配
       name: "宠物爱好者",
       email: "pet@example.com",
       password: "123456",

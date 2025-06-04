@@ -30,6 +30,10 @@ export default function LoginPage() {
 
     try {
       console.log("开始登录:", { email })
+
+      // 先初始化默认用户（确保用户存在）
+      await fetch("/api/init", { method: "GET" })
+
       await signIn(email, password)
 
       toast({
