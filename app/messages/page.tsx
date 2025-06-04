@@ -1,9 +1,9 @@
 import { getCurrentUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Input } from "@/components/ui/input"
-import { Search, ArrowLeft, ChevronRight } from "lucide-react"
+import { Search, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { getUserChats, getContactById, getChatMessages } from "@/lib/chat"
+import { getUserChats, getContactById } from "@/lib/chat"
 import { MessageListItem } from "@/components/message-list-item"
 
 // 格式化时间显示
@@ -37,23 +37,18 @@ export default async function MessagesPage() {
     return timeB - timeA // 最新的在前面
   })
 
-  // 获取每个聊天的联系人信息和最新消息
+  // 获取每个聊天的联系人信息
   const chatsWithDetails = await Promise.all(
     sortedChats.map(async (chat) => {
       const otherParticipantId = chat.participants.find((id) => id !== user.id)
       const contact = otherParticipantId ? await getContactById(otherParticipantId) : null
-
-      // 获取这个聊天的最新3条消息
-      const allMessages = await getChatMessages(chat.id)
-      const recentMessages = allMessages.slice(-3) // 最新3条消息
-
-      return { chat, contact, recentMessages }
+      return { chat, contact }
     }),
   )
 
   return (
     <div className="flex flex-col h-screen pb-20">
-      <div className="flex items-center p-4 border-b bg-blue-50">
+      <div className="flex items-center p-4 border-b bg-white">
         <Link href="/" className="mr-2">
           <ArrowLeft className="h-5 w-5" />
         </Link>
@@ -73,44 +68,17 @@ export default async function MessagesPage() {
             <p className="text-muted-foreground">暂无消息</p>
           </div>
         ) : (
-          chatsWithDetails.map(({ chat, contact, recentMessages }) => (
-            <div key={chat.id} className="border-b border-gray-100">
-              {/* 聊天头部 */}
-              <MessageListItem
-                id={chat.id}
-                avatar={contact?.avatar || "/placeholder.svg?height=48&width=48"}
-                name={contact?.name || "未知联系人"}
-                message={chat.lastMessage?.content || "暂无消息"}
-                time={chat.lastMessage ? formatTime(chat.lastMessage.timestamp) : ""}
-                unreadCount={chat.unreadCount}
-                online={contact?.online || false}
-              />
-
-              {/* 最新消息预览 */}
-              {recentMessages.length > 0 && (
-                <div className="px-4 pb-3 space-y-1">
-                  {recentMessages.slice(-2).map((message) => {
-                    // 只显示最新2条
-                    const isCurrentUser = message.senderId === user.id
-                    const senderName = isCurrentUser ? "我" : contact?.name || "对方"
-
-                    return (
-                      <div key={message.id} className="text-xs text-gray-500 truncate">
-                        <span className="font-medium">{senderName}:</span> {message.content}
-                      </div>
-                    )
-                  })}
-
-                  {/* 查看更多链接 */}
-                  <Link
-                    href={`/messages/${chat.id}`}
-                    className="inline-flex items-center text-xs text-primary hover:underline"
-                  >
-                    查看完整对话 <ChevronRight className="h-3 w-3 ml-1" />
-                  </Link>
-                </div>
-              )}
-            </div>
+          chatsWithDetails.map(({ chat, contact }) => (
+            <MessageListItem
+              key={chat.id}
+              id={chat.id}
+              avatar={contact?.avatar || "/placeholder.svg?height=48&width=48"}
+              name={contact?.name || "未知联系人"}
+              message={chat.lastMessage?.content || "暂无消息"}
+              time={chat.lastMessage ? formatTime(chat.lastMessage.timestamp) : ""}
+              unreadCount={chat.unreadCount}
+              online={contact?.online || false}
+            />
           ))
         )}
       </div>
