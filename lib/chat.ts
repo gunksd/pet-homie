@@ -422,23 +422,25 @@ const chats: Chat[] = [
 
 // 获取用户的聊天列表
 export async function getUserChats(userId: string): Promise<Chat[]> {
+  console.log("=== getUserChats 调试信息 ===")
   console.log("查询用户聊天列表，用户ID:", userId)
+  console.log("所有聊天数据:", chats)
 
-  // 如果找不到匹配的聊天，返回所有聊天（仅用于演示）
-  const userChats = chats.filter((chat) => chat.participants.includes(userId))
-
-  if (userChats.length === 0) {
-    console.log("未找到匹配的聊天，返回所有聊天")
-    return chats
-  }
-
-  console.log("找到匹配的聊天:", userChats.length)
-  return userChats
+  // 强制返回所有聊天用于调试
+  console.log("返回所有聊天进行调试")
+  return chats
 }
 
 // 根据ID获取联系人信息
 export async function getContactById(contactId: string): Promise<Contact | null> {
-  return contacts.find((contact) => contact.id === contactId) || null
+  console.log("=== getContactById 调试信息 ===")
+  console.log("查找联系人ID:", contactId)
+  console.log("所有联系人数据:", contacts)
+
+  const contact = contacts.find((contact) => contact.id === contactId) || null
+  console.log("找到的联系人:", contact)
+
+  return contact
 }
 
 // 根据ID获取聊天信息
