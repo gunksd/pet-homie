@@ -42,8 +42,6 @@ export default function AIAssistantPage() {
   const [showReportDialog, setShowReportDialog] = useState(false)
   const [dialogTitle, setDialogTitle] = useState("")
   const { toast } = useToast()
-  // 在useState部分添加新的状态
-  const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null)
 
   const handleGenerateReport = async () => {
     setLoading(true)
@@ -280,54 +278,24 @@ export default function AIAssistantPage() {
           </div>
         </div>
 
-        {/* 替换常见问题部分的代码 */}
         <div className="mt-6">
           <h2 className="text-lg font-medium mb-4">常见问题</h2>
           <div className="space-y-3">
-            {[
-              {
-                id: "q1",
-                question: "我的狗狗不爱吃东西怎么办？",
-                answer:
-                  "狗狗不爱吃东西可能有多种原因：可能是食物不合口味、环境变化、健康问题或是牙齿不适。建议尝试更换食物种类、固定喂食时间、提供安静的进食环境，如果持续一天以上不进食，应及时就医检查。",
-              },
-              {
-                id: "q2",
-                question: "猫咪掉毛严重是什么原因？",
-                answer:
-                  "猫咪掉毛严重可能是季节性换毛、营养不良、压力、皮肤疾病或寄生虫感染导致。建议定期梳理毛发、提供均衡饮食、确保充足饮水、减少环境压力，如果伴随皮肤异常或行为改变，应咨询兽医。",
-              },
-              {
-                id: "q3",
-                question: "宠物疫苗接种时间表",
-                answer:
-                  "犬类：6-8周龄开始接种犬瘟热、细小病毒等核心疫苗，每3-4周注射一次，共3次，之后每年一次；狂犬疫苗3月龄以上接种，每年一次。猫类：6-8周龄开始接种猫瘟、杯状病毒等核心疫苗，每3-4周一次，共3次，之后每年一次。具体方案请咨询兽医。",
-              },
-              {
-                id: "q4",
-                question: "如何判断宠物是否需要紧急就医？",
-                answer:
-                  "需要紧急就医的情况包括：严重外伤出血、呕吐腹泻持续超过24小时、突然瘫痪或无法站立、呼吸困难、抽搐、高烧（体温超过39.5℃）、误食有毒物质、严重过敏反应等。如有疑问，建议立即联系兽医咨询。",
-              },
-            ].map((item) => (
-              <Card
-                key={item.id}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => setExpandedQuestion(expandedQuestion === item.id ? null : item.id)}
-              >
-                <CardContent className="p-3">
-                  <div className="flex justify-between items-center">
-                    <p className="text-sm">{item.question}</p>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      {expandedQuestion === item.id ? "-" : "+"}
-                    </Button>
-                  </div>
-                  {expandedQuestion === item.id && (
-                    <div className="mt-2 pt-2 border-t text-sm text-muted-foreground">{item.answer}</div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+            <Card className="cursor-pointer hover:bg-muted/50">
+              <CardContent className="p-3">
+                <p className="text-sm">我的狗狗不爱吃东西怎么办？</p>
+              </CardContent>
+            </Card>
+            <Card className="cursor-pointer hover:bg-muted/50">
+              <CardContent className="p-3">
+                <p className="text-sm">猫咪掉毛严重是什么原因？</p>
+              </CardContent>
+            </Card>
+            <Card className="cursor-pointer hover:bg-muted/50">
+              <CardContent className="p-3">
+                <p className="text-sm">宠物疫苗接种时间表</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

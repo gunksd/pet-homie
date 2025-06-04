@@ -5,9 +5,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, ArrowLeft, Heart, Menu } from "lucide-react"
+import { Search, ArrowLeft, Heart, Menu, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { useCart } from "@/lib/cart"
+import { useToast } from "@/components/ui/use-toast"
 
 interface Product {
   id: string
@@ -21,6 +23,24 @@ interface Product {
 export default function ShopPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeCategory, setActiveCategory] = useState("all")
+
+  const { addItem, getTotalItems } = useCart()
+  const { toast } = useToast()
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+    })
+
+    toast({
+      title: "添加成功",
+      description: `${product.name} 已添加到购物车`,
+    })
+  }
 
   const products: Product[] = [
     {
@@ -104,9 +124,21 @@ export default function ShopPage() {
           </Link>
           <h1 className="text-lg font-medium">宠物商场</h1>
         </div>
-        <Button variant="ghost" size="icon">
-          <Menu className="h-5 w-5" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link href="/cart" className="relative">
+            <Button variant="ghost" size="icon">
+              <ShoppingBag className="h-5 w-5" />
+              {getTotalItems() > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {getTotalItems()}
+                </span>
+              )}
+            </Button>
+          </Link>
+          <Button variant="ghost" size="icon">
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
 
       <div className="p-4">
@@ -145,7 +177,7 @@ export default function ShopPage() {
                 <p className="text-xs text-muted-foreground mb-2">{product.description}</p>
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-primary">¥{product.price}</span>
-                  <Button size="sm" className="h-7 text-xs">
+                  <Button size="sm" className="h-7 text-xs" onClick={() => handleAddToCart(product)}>
                     加入购物车
                   </Button>
                 </div>

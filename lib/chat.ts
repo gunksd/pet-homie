@@ -51,7 +51,6 @@ const contacts: Contact[] = [
   },
 ]
 
-// 修改messages数组，添加更多预置消息
 const messages: Message[] = [
   {
     id: "msg_1",
@@ -73,24 +72,6 @@ const messages: Message[] = [
   },
   {
     id: "msg_3",
-    chatId: "chat_1",
-    senderId: "doctor_chen",
-    content: "可以的，请准时到达宠物医院朝阳分院，记得带上豆豆的疫苗本。",
-    timestamp: new Date("2025-06-04T11:10:00"),
-    type: "text",
-    read: false,
-  },
-  {
-    id: "msg_4",
-    chatId: "chat_1",
-    senderId: "1", // 当前用户
-    content: "好的，谢谢医生，我会准时带豆豆过去的。",
-    timestamp: new Date("2025-06-04T11:15:00"),
-    type: "text",
-    read: true,
-  },
-  {
-    id: "msg_5",
     chatId: "chat_2",
     senderId: "user_bingyi",
     content: "猫猫的健康状态怎么样了呢",
@@ -99,7 +80,7 @@ const messages: Message[] = [
     read: false,
   },
   {
-    id: "msg_6",
+    id: "msg_4",
     chatId: "chat_2",
     senderId: "1", // 当前用户
     content: "小橘最近状态很好，食欲也恢复了",
@@ -107,69 +88,24 @@ const messages: Message[] = [
     type: "text",
     read: true,
   },
-  {
-    id: "msg_7",
-    chatId: "chat_2",
-    senderId: "user_bingyi",
-    content: "太好了！上次推荐的猫粮效果不错吧？",
-    timestamp: new Date("2025-06-04T10:52:00"),
-    type: "text",
-    read: false,
-  },
-  {
-    id: "msg_8",
-    chatId: "chat_2",
-    senderId: "1", // 当前用户
-    content: "是的，小橘很喜欢吃，毛发也变得更亮了",
-    timestamp: new Date("2025-06-04T10:55:00"),
-    type: "text",
-    read: true,
-  },
-  {
-    id: "msg_9",
-    chatId: "chat_3",
-    senderId: "vet_li",
-    content: "您好，我看到您预约了明天上午10点的宠物美容服务，请问有什么特殊要求吗？",
-    timestamp: new Date("2025-06-04T09:30:00"),
-    type: "text",
-    read: false,
-  },
-  {
-    id: "msg_10",
-    chatId: "chat_3",
-    senderId: "1", // 当前用户
-    content: "您好，希望能给我家金毛剪短一点，天气热了，谢谢！",
-    timestamp: new Date("2025-06-04T09:45:00"),
-    type: "text",
-    read: true,
-  },
 ]
 
-// 修改chats数组，添加新的聊天
 const chats: Chat[] = [
   {
     id: "chat_1",
     participants: ["1", "doctor_chen"],
-    lastMessage: messages.find((m) => m.id === "msg_4"),
+    lastMessage: messages.find((m) => m.id === "msg_2"),
     unreadCount: 1,
     createdAt: new Date("2025-06-04T10:00:00"),
-    updatedAt: new Date("2025-06-04T11:15:00"),
+    updatedAt: new Date("2025-06-04T11:05:00"),
   },
   {
     id: "chat_2",
     participants: ["1", "user_bingyi"],
-    lastMessage: messages.find((m) => m.id === "msg_8"),
-    unreadCount: 2,
+    lastMessage: messages.find((m) => m.id === "msg_4"),
+    unreadCount: 10,
     createdAt: new Date("2025-06-04T09:00:00"),
-    updatedAt: new Date("2025-06-04T10:55:00"),
-  },
-  {
-    id: "chat_3",
-    participants: ["1", "vet_li"],
-    lastMessage: messages.find((m) => m.id === "msg_10"),
-    unreadCount: 1,
-    createdAt: new Date("2025-06-04T09:30:00"),
-    updatedAt: new Date("2025-06-04T09:45:00"),
+    updatedAt: new Date("2025-06-04T10:50:00"),
   },
 ]
 

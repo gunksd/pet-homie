@@ -73,34 +73,36 @@ export default async function NewsPage() {
 
         <div className="space-y-4">
           {news.map((item) => (
-            <Card key={item.id} className="overflow-hidden">
-              <CardContent className="p-0">
-                <div className="flex">
-                  <div className="relative w-32 h-24">
-                    <Image src={item.image || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
-                  </div>
-                  <div className="flex-1 p-3">
-                    <div className="flex items-start justify-between mb-1">
-                      <h3 className="font-medium text-sm leading-tight">{item.title}</h3>
+            <Link key={item.id} href={`/news/${item.id}`}>
+              <Card className="overflow-hidden hover:shadow-md transition-shadow">
+                <CardContent className="p-0">
+                  <div className="flex">
+                    <div className="relative w-32 h-24">
+                      <Image src={item.image || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
                     </div>
-                    <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{item.summary}</p>
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <div className="flex items-center gap-3">
-                        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">{item.category}</span>
+                    <div className="flex-1 p-3">
+                      <div className="flex items-start justify-between mb-1">
+                        <h3 className="font-medium text-sm leading-tight">{item.title}</h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground mb-2 line-clamp-2">{item.summary}</p>
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <div className="flex items-center gap-3">
+                          <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">{item.category}</span>
+                          <div className="flex items-center gap-1">
+                            <Eye className="h-3 w-3" />
+                            <span>{item.views}</span>
+                          </div>
+                        </div>
                         <div className="flex items-center gap-1">
-                          <Eye className="h-3 w-3" />
-                          <span>{item.views}</span>
+                          <Clock className="h-3 w-3" />
+                          <span>{item.publishedAt}</span>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        <span>{item.publishedAt}</span>
-                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>

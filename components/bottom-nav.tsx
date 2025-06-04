@@ -22,8 +22,8 @@ const navItems = [
     icon: PawPrint,
   },
   {
-    label: "商城",
-    href: "/shop",
+    label: "购物车",
+    href: "/cart",
     icon: ShoppingBag,
   },
   {
