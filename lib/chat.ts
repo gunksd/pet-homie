@@ -49,6 +49,12 @@ const contacts: Contact[] = [
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
     online: true,
   },
+  {
+    id: "ai_assistant",
+    name: "AI宠物助手",
+    avatar: "https://images.unsplash.com/photo-1679958157996-3c1d7c1c0a88?w=150&h=150&fit=crop&crop=face",
+    online: true,
+  },
 ]
 
 const messages: Message[] = [
@@ -88,6 +94,34 @@ const messages: Message[] = [
     type: "text",
     read: true,
   },
+  // AI助手对话
+  {
+    id: "msg_5",
+    chatId: "chat_ai",
+    senderId: "1", // 当前用户
+    content: "猫猫的健康状态怎么样了呢",
+    timestamp: new Date("2025-06-04T18:47:00"),
+    type: "text",
+    read: true,
+  },
+  {
+    id: "msg_6",
+    chatId: "chat_ai",
+    senderId: "ai_assistant",
+    content: "小橘最近状态很好，食欲也恢复了",
+    timestamp: new Date("2025-06-04T18:50:00"),
+    type: "text",
+    read: true,
+  },
+  {
+    id: "msg_7",
+    chatId: "chat_ai",
+    senderId: "1", // 当前用户
+    content: "您好，请问现在方便聊天吗？",
+    timestamp: new Date("2025-06-04T19:38:00"),
+    type: "text",
+    read: true,
+  },
 ]
 
 const chats: Chat[] = [
@@ -106,6 +140,14 @@ const chats: Chat[] = [
     unreadCount: 10,
     createdAt: new Date("2025-06-04T09:00:00"),
     updatedAt: new Date("2025-06-04T10:50:00"),
+  },
+  {
+    id: "chat_ai",
+    participants: ["1", "ai_assistant"],
+    lastMessage: messages.find((m) => m.id === "msg_7"),
+    unreadCount: 0,
+    createdAt: new Date("2025-06-04T18:00:00"),
+    updatedAt: new Date("2025-06-04T19:38:00"),
   },
 ]
 
@@ -150,6 +192,11 @@ export async function sendMessage(chatId: string, senderId: string, content: str
   if (chat) {
     chat.lastMessage = newMessage
     chat.updatedAt = new Date()
+
+    // 如果发送者不是当前用户，增加未读计数
+    if (senderId !== "1") {
+      chat.unreadCount += 1
+    }
   }
 
   return newMessage

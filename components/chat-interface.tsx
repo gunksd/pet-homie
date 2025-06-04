@@ -11,6 +11,7 @@ import Link from "next/link"
 import type { Chat, Message, Contact, User } from "@/lib/chat"
 import { sendMessage, markMessagesAsRead } from "@/lib/chat"
 import { useToast } from "@/components/ui/use-toast"
+import { generateAIResponse } from "@/lib/ai-chat"
 
 interface ChatInterfaceProps {
   chat: Chat
@@ -56,10 +57,33 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     setShowPresetMessages(false)
 
     try {
+      // 发送用户消息
       const message = await sendMessage(chat.id, currentUser.id, content)
       setMessages((prev) => [...prev, message])
+
       if (!messageContent) {
         setNewMessage("")
+      }
+
+      // 如果是与AI助手的对话，生成AI回复
+      if (contact?.id === "ai_assistant") {
+        setTimeout(async () => {
+          try {
+            // 调用AI生成回复
+            const aiResponse = await generateAIResponse(content)
+
+            // 创建AI回复消息
+            const aiMessage = await sendMessage(chat.id, contact.id, aiResponse)
+            setMessages((prev) => [...prev, aiMessage])
+          } catch (error) {
+            console.error("AI回复生成失败:", error)
+            toast({
+              title: "AI回复失败",
+              description: "无法生成AI回复，请稍后再试",
+              variant: "destructive",
+            })
+          }
+        }, 1000) // 延迟1秒回复，模拟真实对话
       }
     } catch (error) {
       toast({
@@ -104,6 +128,37 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     })
   }
 
+  // 格式化最后在线时间
+  const formatLastSeen = (date?: Date) => {
+    if (!date) return "离线"
+
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+
+    // 如果在线时间在5分钟内，显示"在线"
+    if (diff < 5 * 60 * 1000) return "在线"
+
+    // 如果是今天
+    if (date.toDateString() === now.toDateString()) {
+      return `今天 ${date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
+    }
+
+    // 如果是昨天
+    const yesterday = new Date(now)
+    yesterday.setDate(yesterday.getDate() - 1)
+    if (date.toDateString() === yesterday.toDateString()) {
+      return `昨天 ${date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
+    }
+
+    // 其他日期
+    return date.toLocaleDateString("zh-CN", {
+      month: "numeric",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  }
+
   return (
     <div className="flex flex-col h-screen pb-20">
       {/* 聊天头部 */}
@@ -114,19 +169,20 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
           </Link>
           <div className="relative">
             <Avatar>
-              <AvatarImage src={contact?.avatar || "/placeholder.svg"} alt={contact?.name} />
-              <AvatarFallback>{contact?.name?.charAt(0)}</AvatarFallback>
+              <AvatarImage
+                src={contact?.avatar || "/placeholder.svg?height=40&width=40&query=user"}
+                alt={contact?.name || "用户"}
+              />
+              <AvatarFallback>{(contact?.name || "用户").charAt(0)}</AvatarFallback>
             </Avatar>
             {contact?.online && (
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
             )}
           </div>
           <div>
-            <h1 className="font-medium">{contact?.name}</h1>
+            <h1 className="font-medium">{contact?.name || "用户"}</h1>
             <p className="text-xs text-muted-foreground">
-              {contact?.online
-                ? "在线"
-                : `最后在线：${contact?.lastSeen?.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`}
+              {contact?.online ? "在线" : `最后在线: ${formatLastSeen(contact?.lastSeen)}`}
             </p>
           </div>
         </div>
@@ -148,6 +204,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
         {messages.map((message, index) => {
           const isCurrentUser = message.senderId === currentUser.id
           const showDate = index === 0 || formatDate(message.timestamp) !== formatDate(messages[index - 1].timestamp)
+          const messageContact = isCurrentUser ? currentUser : contact
 
           return (
             <div key={message.id}>
@@ -156,12 +213,13 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
               )}
               <div className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
                 <div className={`flex gap-2 max-w-[80%] ${isCurrentUser ? "flex-row-reverse" : "flex-row"}`}>
-                  {!isCurrentUser && (
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={contact?.avatar || "/placeholder.svg"} alt={contact?.name} />
-                      <AvatarFallback>{contact?.name?.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                  )}
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage
+                      src={messageContact?.avatar || "/placeholder.svg?height=32&width=32&query=user"}
+                      alt={messageContact?.name || "用户"}
+                    />
+                    <AvatarFallback>{(messageContact?.name || "用户").charAt(0)}</AvatarFallback>
+                  </Avatar>
                   <div
                     className={`rounded-lg px-3 py-2 ${
                       isCurrentUser ? "bg-primary text-primary-foreground" : "bg-white"
