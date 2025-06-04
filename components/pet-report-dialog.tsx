@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Download, Share, Printer, X } from "lucide-react"
+import { Download, Share, Printer } from "lucide-react"
 import { MarkdownRenderer } from "@/components/markdown-renderer"
 import { useToast } from "@/components/ui/use-toast"
 
@@ -138,9 +138,6 @@ export function PetReportDialog({ open, onOpenChange, report, petName }: PetRepo
               <Button variant="outline" size="sm" onClick={handlePrint}>
                 <Printer className="h-4 w-4 mr-1" />
                 打印
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
-                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
