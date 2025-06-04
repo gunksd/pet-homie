@@ -85,7 +85,8 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     if (!content || sending) return
 
     setSending(true)
-    setShowPresetMessages(false)
+    // 保持预设消息可见
+    // setShowPresetMessages(false);
 
     try {
       // 发送用户消息
@@ -296,7 +297,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
       </div>
 
       {/* 预设消息 */}
-      {showPresetMessages && messages.length <= 2 && (
+      {showPresetMessages && (
         <div className="px-4 py-2 border-t bg-gray-50">
           <p className="text-xs text-muted-foreground mb-2">快捷回复：</p>
           <div className="flex flex-wrap gap-2">
