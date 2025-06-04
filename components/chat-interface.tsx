@@ -9,9 +9,38 @@ import { Input } from "@/components/ui/input"
 import { ArrowLeft, Send, Phone, Video, MoreVertical, ImageIcon } from "lucide-react"
 import Link from "next/link"
 import type { Chat, Message, Contact, User } from "@/lib/chat"
-import { sendMessage, markMessagesAsRead } from "@/lib/chat"
 import { useToast } from "@/components/ui/use-toast"
-import { generateAIResponse } from "@/lib/ai-chat"
+
+// 创建客户端操作函数
+async function sendMessageAction(chatId: string, senderId: string, content: string) {
+  return fetch("/api/messages/send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ chatId, senderId, content }),
+  }).then((res) => res.json())
+}
+
+async function markMessagesAsReadAction(chatId: string, userId: string) {
+  return fetch("/api/messages/read", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ chatId, userId }),
+  })
+}
+
+async function generateAIResponseAction(userMessage: string) {
+  return fetch("/api/ai/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ userMessage }),
+  }).then((res) => res.json())
+}
 
 interface ChatInterfaceProps {
   chat: Chat
@@ -44,11 +73,13 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     scrollToBottom()
   }, [messages])
 
+  // 修改useEffect，使用客户端操作函数
   useEffect(() => {
     // 标记消息为已读
-    markMessagesAsRead(chat.id, currentUser.id)
+    markMessagesAsReadAction(chat.id, currentUser.id)
   }, [chat.id, currentUser.id])
 
+  // 修改handleSendMessage函数，使用客户端操作函数
   const handleSendMessage = async (messageContent?: string) => {
     const content = messageContent || newMessage.trim()
     if (!content || sending) return
@@ -58,7 +89,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
 
     try {
       // 发送用户消息
-      const message = await sendMessage(chat.id, currentUser.id, content)
+      const message = await sendMessageAction(chat.id, currentUser.id, content)
       setMessages((prev) => [...prev, message])
 
       if (!messageContent) {
@@ -67,23 +98,45 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
 
       // 如果是与AI助手的对话，生成AI回复
       if (contact?.id === "ai_assistant") {
-        setTimeout(async () => {
-          try {
-            // 调用AI生成回复
-            const aiResponse = await generateAIResponse(content)
+        setTimeout(
+          async () => {
+            try {
+              // 显示"正在输入"状态
+              const typingMessage = await sendMessageAction(chat.id, contact.id, "正在思考中...")
+              setMessages((prev) => [...prev, typingMessage])
 
-            // 创建AI回复消息
-            const aiMessage = await sendMessage(chat.id, contact.id, aiResponse)
-            setMessages((prev) => [...prev, aiMessage])
-          } catch (error) {
-            console.error("AI回复生成失败:", error)
-            toast({
-              title: "AI回复失败",
-              description: "无法生成AI回复，请稍后再试",
-              variant: "destructive",
-            })
-          }
-        }, 1000) // 延迟1秒回复，模拟真实对话
+              // 调用AI生成回复
+              const { response: aiResponse } = await generateAIResponseAction(content)
+
+              // 删除"正在输入"消息，添加真实回复
+              setMessages((prev) => prev.filter((msg) => msg.id !== typingMessage.id))
+
+              // 创建AI回复消息
+              const aiMessage = await sendMessageAction(chat.id, contact.id, aiResponse)
+              setMessages((prev) => [...prev, aiMessage])
+            } catch (error) {
+              console.error("AI回复生成失败:", error)
+
+              // 删除"正在输入"消息
+              setMessages((prev) => prev.filter((msg) => msg.content !== "正在思考中..."))
+
+              // 发送错误提示
+              const errorMessage = await sendMessageAction(
+                chat.id,
+                contact.id,
+                "抱歉，我现在有点忙，请稍后再试。如果是紧急情况，建议联系专业兽医.",
+              )
+              setMessages((prev) => [...prev, errorMessage])
+
+              toast({
+                title: "AI回复失败",
+                description: "网络连接问题，请稍后再试",
+                variant: "destructive",
+              })
+            }
+          },
+          1000 + Math.random() * 2000,
+        ) // 1-3秒随机延迟，模拟真实对话
       }
     } catch (error) {
       toast({

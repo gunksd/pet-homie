@@ -29,12 +29,17 @@ export default async function MessagesPage() {
     redirect("/auth/login")
   }
 
-  // 获取用户的聊天列表
+  // 获取用户的聊天列表并按最后消息时间排序
   const userChats = await getUserChats(user.id)
+  const sortedChats = userChats.sort((a, b) => {
+    const timeA = a.lastMessage?.timestamp.getTime() || 0
+    const timeB = b.lastMessage?.timestamp.getTime() || 0
+    return timeB - timeA // 最新的在前面
+  })
 
   // 获取每个聊天的联系人信息
   const chatsWithContacts = await Promise.all(
-    userChats.map(async (chat) => {
+    sortedChats.map(async (chat) => {
       const otherParticipantId = chat.participants.find((id) => id !== user.id)
       const contact = otherParticipantId ? await getContactById(otherParticipantId) : null
       return { chat, contact }
