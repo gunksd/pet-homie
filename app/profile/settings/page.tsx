@@ -1,40 +1,14 @@
-"use client"
-
 import { getCurrentUser } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, ChevronRight, Bell, Shield, Palette, Globe, HelpCircle } from "lucide-react"
 import Link from "next/link"
-import { useTheme } from "next-themes"
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { Loader2 } from "lucide-react"
 
-export default function SettingsPage() {
-  const [user, setUser] = useState<any>(null)
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-  const router = useRouter()
-
-  useEffect(() => {
-    setMounted(true)
-    async function loadUser() {
-      const currentUser = await getCurrentUser()
-      if (!currentUser) {
-        router.push("/auth/login")
-        return
-      }
-      setUser(currentUser)
-    }
-    loadUser()
-  }, [router])
-
-  if (!user || !mounted) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    )
+export default async function SettingsPage() {
+  const user = await getCurrentUser()
+  if (!user) {
+    redirect("/auth/login")
   }
 
   return (
@@ -124,7 +98,7 @@ export default function SettingsPage() {
                 <p className="font-medium">深色模式</p>
                 <p className="text-sm text-muted-foreground">切换应用主题</p>
               </div>
-              <Switch checked={theme === "dark"} onCheckedChange={(checked) => setTheme(checked ? "dark" : "light")} />
+              <Switch />
             </div>
           </CardContent>
         </Card>
