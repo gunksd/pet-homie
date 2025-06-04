@@ -13,33 +13,59 @@ import { useToast } from "@/components/ui/use-toast"
 
 // 创建客户端操作函数
 async function sendMessageAction(chatId: string, senderId: string, content: string) {
-  return fetch("/api/messages/send", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ chatId, senderId, content }),
-  }).then((res) => res.json())
+  try {
+    const response = await fetch("/api/messages/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chatId, senderId, content }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error("发送消息失败:", error)
+    throw error
+  }
 }
 
 async function markMessagesAsReadAction(chatId: string, userId: string) {
-  return fetch("/api/messages/read", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ chatId, userId }),
-  })
+  try {
+    return await fetch("/api/messages/read", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chatId, userId }),
+    })
+  } catch (error) {
+    console.error("标记消息已读失败:", error)
+  }
 }
 
 async function generateAIResponseAction(userMessage: string) {
-  return fetch("/api/ai/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ userMessage }),
-  }).then((res) => res.json())
+  try {
+    const response = await fetch("/api/ai/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userMessage }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error("生成AI回复失败:", error)
+    throw error
+  }
 }
 
 interface ChatInterfaceProps {
@@ -73,13 +99,11 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     scrollToBottom()
   }, [messages])
 
-  // 修改useEffect，使用客户端操作函数
   useEffect(() => {
     // 标记消息为已读
     markMessagesAsReadAction(chat.id, currentUser.id)
   }, [chat.id, currentUser.id])
 
-  // 修改handleSendMessage函数，使用客户端操作函数
   const handleSendMessage = async (messageContent?: string) => {
     const content = messageContent || newMessage.trim()
     if (!content || sending) return
@@ -98,18 +122,27 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
 
       // 如果是与AI助手的对话，生成AI回复
       if (contact?.id === "ai_assistant") {
+        // 延迟1-3秒模拟真实对话
         setTimeout(
           async () => {
             try {
               // 显示"正在输入"状态
-              const typingMessage = await sendMessageAction(chat.id, contact.id, "正在思考中...")
+              const typingId = `typing-${Date.now()}`
+              const typingMessage = {
+                id: typingId,
+                chatId: chat.id,
+                senderId: contact.id,
+                content: "正在思考中...",
+                timestamp: new Date(),
+                read: false,
+              }
               setMessages((prev) => [...prev, typingMessage])
 
               // 调用AI生成回复
               const { response: aiResponse } = await generateAIResponseAction(content)
 
-              // 删除"正在输入"消息，添加真实回复
-              setMessages((prev) => prev.filter((msg) => msg.id !== typingMessage.id))
+              // 删除"正在输入"消息
+              setMessages((prev) => prev.filter((msg) => msg.id !== typingId))
 
               // 创建AI回复消息
               const aiMessage = await sendMessageAction(chat.id, contact.id, aiResponse)
@@ -121,12 +154,16 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
               setMessages((prev) => prev.filter((msg) => msg.content !== "正在思考中..."))
 
               // 发送错误提示
-              const errorMessage = await sendMessageAction(
-                chat.id,
-                contact.id,
-                "抱歉，我现在有点忙，请稍后再试。如果是紧急情况，建议联系专业兽医.",
-              )
-              setMessages((prev) => [...prev, errorMessage])
+              try {
+                const errorMessage = await sendMessageAction(
+                  chat.id,
+                  contact.id,
+                  "抱歉，我现在有点忙，请稍后再试。如果是紧急情况，建议联系专业兽医。",
+                )
+                setMessages((prev) => [...prev, errorMessage])
+              } catch (sendError) {
+                console.error("发送错误消息失败:", sendError)
+              }
 
               toast({
                 title: "AI回复失败",
@@ -136,9 +173,10 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
             }
           },
           1000 + Math.random() * 2000,
-        ) // 1-3秒随机延迟，模拟真实对话
+        )
       }
     } catch (error) {
+      console.error("发送消息失败:", error)
       toast({
         title: "发送失败",
         description: "消息发送失败，请重试",
@@ -215,7 +253,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
   return (
     <div className="flex flex-col h-screen pb-20">
       {/* 聊天头部 */}
-      <div className="flex items-center justify-between p-4 border-b bg-white">
+      <div className="flex items-center justify-between p-4 border-b bg-background">
         <div className="flex items-center gap-3">
           <Link href="/messages">
             <ArrowLeft className="h-5 w-5" />
@@ -229,7 +267,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
               <AvatarFallback>{(contact?.name || "?").charAt(0)}</AvatarFallback>
             </Avatar>
             {contact?.online && (
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
             )}
           </div>
           <div>
@@ -253,7 +291,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
       </div>
 
       {/* 消息列表 */}
-      <div className="flex-1 overflow-auto p-4 space-y-4 bg-gray-50">
+      <div className="flex-1 overflow-auto p-4 space-y-4 bg-muted/30">
         {messages.map((message, index) => {
           const isCurrentUser = message.senderId === currentUser.id
           const showDate = index === 0 || formatDate(message.timestamp) !== formatDate(messages[index - 1].timestamp)
@@ -275,7 +313,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
                   </Avatar>
                   <div
                     className={`rounded-lg px-3 py-2 ${
-                      isCurrentUser ? "bg-primary text-primary-foreground" : "bg-white"
+                      isCurrentUser ? "bg-primary text-primary-foreground" : "bg-background border"
                     }`}
                   >
                     <p className="text-sm">{message.content}</p>
@@ -297,7 +335,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
 
       {/* 预设消息 */}
       {showPresetMessages && messages.length <= 2 && (
-        <div className="px-4 py-2 border-t bg-gray-50">
+        <div className="px-4 py-2 border-t bg-background">
           <p className="text-xs text-muted-foreground mb-2">快捷回复：</p>
           <div className="flex flex-wrap gap-2">
             {presetMessages.map((preset, index) => (
@@ -305,7 +343,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
                 key={index}
                 variant="outline"
                 size="sm"
-                className="text-xs h-8 bg-white"
+                className="text-xs h-8"
                 onClick={() => handleSendMessage(preset)}
                 disabled={sending}
               >
@@ -317,7 +355,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
       )}
 
       {/* 消息输入框 */}
-      <div className="border-t bg-white p-4">
+      <div className="border-t bg-background p-4">
         <form onSubmit={handleSubmit} className="flex gap-2 items-center">
           <Button type="button" variant="ghost" size="icon" className="text-muted-foreground">
             <ImageIcon className="h-5 w-5" />
@@ -326,7 +364,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="输入消息..."
-            className="flex-1 bg-gray-100"
+            className="flex-1"
             disabled={sending}
           />
           <Button type="submit" size="icon" disabled={!newMessage.trim() || sending} className="rounded-full">

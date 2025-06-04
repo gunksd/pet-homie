@@ -12,7 +12,7 @@ const deepseek = createOpenAI({
 // 生成AI回复
 export async function generateAIResponse(userMessage: string): Promise<string> {
   try {
-    console.log("调用DeepSeek API生成回复...")
+    console.log("开始调用DeepSeek API...")
 
     const prompt = `你是一位专业的宠物医生AI助手，名叫"AI宠物助手"。你的特点：
 - 专业：具备丰富的宠物医疗和护理知识
@@ -31,13 +31,14 @@ export async function generateAIResponse(userMessage: string): Promise<string> {
       temperature: 0.8,
     })
 
-    console.log("DeepSeek API调用成功")
+    console.log("DeepSeek API调用成功，回复长度:", text.length)
     return text
   } catch (error) {
-    console.error("生成AI回复失败:", error)
+    console.error("DeepSeek API调用失败:", error)
 
     // 提供一些备用回复
     const fallbackReplies = [
+      "您好！我是AI宠物助手，很高兴为您服务。请问您的宠物有什么问题需要咨询吗？",
       "抱歉，我现在无法回复您的消息。请稍后再试，或者您可以描述一下宠物的具体情况。",
       "系统暂时繁忙，请稍后再试。如果是紧急情况，建议立即联系当地兽医。",
       "网络连接有问题，请稍后重试。有什么宠物问题我都很乐意帮助您！",

@@ -1,66 +1,87 @@
-import { getCurrentUser } from "@/lib/auth"
-import { redirect } from "next/navigation"
+"use client"
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, ArrowLeft } from "lucide-react"
+import { ArrowLeft, Search, Edit } from "lucide-react"
 import Link from "next/link"
-import { MessageListItem } from "@/components/message-list-item"
 
-// 硬编码的联系人数据，做演示用
-const mockContacts = [
-  {
-    id: "chat_ai", // AI助手的聊天ID
-    avatar: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=150&h=150&fit=crop&crop=face",
-    name: "AI宠物助手",
-    message: "有什么宠物问题需要咨询吗？我很乐意帮助您！",
-    time: "19:42",
-    unreadCount: 0,
-    online: true,
-  },
-  {
-    id: "chat_vet_li", // 兽医的聊天ID
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-    name: "王晓明兽医",
-    message: "上午10点到11点之间都可以，记得带上疫苗本",
-    time: "15:40",
-    unreadCount: 2,
-    online: true,
-  },
-]
-
-export default async function MessagesPage() {
-  const user = await getCurrentUser()
-  if (!user) {
-    redirect("/auth/login")
-  }
+export default function MessagesPage() {
+  // 硬编码的联系人数据
+  const contacts = [
+    {
+      id: "chat_ai",
+      name: "AI宠物助手",
+      avatar: "/placeholder.svg?height=40&width=40",
+      lastMessage: "有什么可以帮助您的吗？",
+      timestamp: "刚刚",
+      unreadCount: 0,
+      online: true,
+    },
+    {
+      id: "chat_vet_li",
+      name: "王晓明兽医",
+      avatar: "/placeholder.svg?height=40&width=40",
+      lastMessage: "记得按时给小狗打疫苗哦",
+      timestamp: "10:30",
+      unreadCount: 1,
+      online: true,
+    },
+  ]
 
   return (
-    <div className="flex flex-col h-screen pb-20">
-      <div className="flex items-center p-4 border-b bg-white">
-        <Link href="/" className="mr-2">
-          <ArrowLeft className="h-5 w-5" />
-        </Link>
-        <h1 className="text-lg font-medium">消息</h1>
+    <div className="flex flex-col h-screen pb-20 bg-background">
+      {/* 头部 */}
+      <div className="flex items-center justify-between p-4 border-b border-border bg-background">
+        <div className="flex items-center gap-2">
+          <Link href="/">
+            <ArrowLeft className="h-5 w-5 text-foreground" />
+          </Link>
+          <h1 className="text-lg font-medium text-foreground">消息</h1>
+        </div>
+        <Button variant="ghost" size="icon">
+          <Edit className="h-5 w-5 text-foreground" />
+        </Button>
       </div>
 
-      <div className="p-4 bg-gray-50">
+      {/* 搜索框 */}
+      <div className="p-4 bg-background">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="搜索" className="pl-9 rounded-full bg-white" />
+          <Input placeholder="搜索联系人或消息" className="pl-10 bg-muted/30 border-border" />
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto bg-white">
-        {mockContacts.map((contact) => (
-          <MessageListItem
+      {/* 联系人列表 */}
+      <div className="flex-1 overflow-auto bg-background">
+        {contacts.map((contact) => (
+          <Link
             key={contact.id}
-            id={contact.id}
-            avatar={contact.avatar}
-            name={contact.name}
-            message={contact.message}
-            time={contact.time}
-            unreadCount={contact.unreadCount}
-            online={contact.online}
-          />
+            href={`/messages/${contact.id}`}
+            className="flex items-center gap-3 p-4 hover:bg-muted/50 border-b border-border/50 transition-colors"
+          >
+            <div className="relative">
+              <Avatar>
+                <AvatarImage src={contact.avatar || "/placeholder.svg"} alt={contact.name} />
+                <AvatarFallback className="bg-primary/10 text-primary">{contact.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              {contact.online && (
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-background"></div>
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium text-foreground truncate">{contact.name}</h3>
+                <span className="text-xs text-muted-foreground">{contact.timestamp}</span>
+              </div>
+              <p className="text-sm text-muted-foreground truncate">{contact.lastMessage}</p>
+            </div>
+            {contact.unreadCount > 0 && (
+              <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-xs text-primary-foreground">{contact.unreadCount}</span>
+              </div>
+            )}
+          </Link>
         ))}
       </div>
     </div>

@@ -237,7 +237,9 @@ export default function AIAssistantPage() {
                     <Card
                       key={index}
                       className={`cursor-pointer transition-all ${
-                        selectedPetIndex === index ? "ring-2 ring-primary bg-blue-50" : "hover:bg-muted/50"
+                        selectedPetIndex === index
+                          ? "ring-2 ring-primary bg-primary/10 text-primary"
+                          : "hover:bg-muted/50"
                       }`}
                       onClick={() => setSelectedPetIndex(index)}
                     >
@@ -256,7 +258,13 @@ export default function AIAssistantPage() {
                             />
                           </div>
                           <div className="flex-1">
-                            <h3 className="font-medium text-lg">{pet.name}</h3>
+                            <h3
+                              className={`font-medium text-lg ${
+                                selectedPetIndex === index ? "text-primary" : "text-foreground"
+                              }`}
+                            >
+                              {pet.name}
+                            </h3>
                             <p className="text-sm text-muted-foreground">
                               {pet.breed} · {pet.age} · {pet.weight}
                             </p>
@@ -274,8 +282,8 @@ export default function AIAssistantPage() {
                 </div>
               </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-sm mb-2">当前状况</h4>
+              <div className="bg-primary/5 dark:bg-primary/10 p-4 rounded-lg border border-primary/20">
+                <h4 className="font-medium text-sm mb-2 text-foreground">当前状况</h4>
                 <p className="text-sm text-muted-foreground">{selectedPet.symptoms}</p>
               </div>
             </div>
