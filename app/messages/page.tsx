@@ -29,8 +29,14 @@ export default async function MessagesPage() {
     redirect("/auth/login")
   }
 
+  // 在页面顶部添加一个调试日志
+  console.log("当前用户ID:", user?.id)
+  console.log("获取聊天列表...")
+
   // 获取用户的聊天列表并按最后消息时间排序
   const userChats = await getUserChats(user.id)
+  console.log("获取到的聊天列表:", userChats.length)
+
   const sortedChats = userChats.sort((a, b) => {
     const timeA = a.lastMessage?.timestamp.getTime() || 0
     const timeB = b.lastMessage?.timestamp.getTime() || 0

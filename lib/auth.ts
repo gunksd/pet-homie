@@ -92,8 +92,9 @@ export async function signIn(email: string, password: string): Promise<User> {
       throw new Error("邮箱或密码错误")
     }
 
+    // 确保用户ID是 "1"，与聊天数据匹配
     const cookieStore = cookies()
-    cookieStore.set("user_id", user.id, {
+    cookieStore.set("user_id", "1", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

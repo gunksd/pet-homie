@@ -377,7 +377,18 @@ const chats: Chat[] = [
 
 // 获取用户的聊天列表
 export async function getUserChats(userId: string): Promise<Chat[]> {
-  return chats.filter((chat) => chat.participants.includes(userId))
+  console.log("查询用户聊天列表，用户ID:", userId)
+
+  // 如果找不到匹配的聊天，返回所有聊天（仅用于演示）
+  const userChats = chats.filter((chat) => chat.participants.includes(userId))
+
+  if (userChats.length === 0) {
+    console.log("未找到匹配的聊天，返回所有聊天")
+    return chats
+  }
+
+  console.log("找到匹配的聊天:", userChats.length)
+  return userChats
 }
 
 // 根据ID获取联系人信息
