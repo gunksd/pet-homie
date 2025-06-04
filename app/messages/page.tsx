@@ -29,8 +29,14 @@ export default async function MessagesPage() {
     redirect("/auth/login")
   }
 
+  console.log("=== MessagesPage 调试信息 ===")
+  console.log("当前用户:", user)
+  console.log("用户ID:", user.id)
+
   // 获取用户的聊天列表并按最后消息时间排序
   const userChats = await getUserChats(user.id)
+  console.log("获取到的聊天列表:", userChats)
+
   const sortedChats = userChats.sort((a, b) => {
     const timeA = a.lastMessage?.timestamp.getTime() || 0
     const timeB = b.lastMessage?.timestamp.getTime() || 0
@@ -40,11 +46,18 @@ export default async function MessagesPage() {
   // 获取每个聊天的联系人信息
   const chatsWithDetails = await Promise.all(
     sortedChats.map(async (chat) => {
+      console.log("处理聊天:", chat.id, "参与者:", chat.participants)
       const otherParticipantId = chat.participants.find((id) => id !== user.id)
+      console.log("其他参与者ID:", otherParticipantId)
+
       const contact = otherParticipantId ? await getContactById(otherParticipantId) : null
+      console.log("找到的联系人:", contact)
+
       return { chat, contact }
     }),
   )
+
+  console.log("最终的聊天详情:", chatsWithDetails)
 
   return (
     <div className="flex flex-col h-screen pb-20">
@@ -68,18 +81,21 @@ export default async function MessagesPage() {
             <p className="text-muted-foreground">暂无消息</p>
           </div>
         ) : (
-          chatsWithDetails.map(({ chat, contact }) => (
-            <MessageListItem
-              key={chat.id}
-              id={chat.id}
-              avatar={contact?.avatar || "/placeholder.svg?height=48&width=48"}
-              name={contact?.name || "未知联系人"}
-              message={chat.lastMessage?.content || "暂无消息"}
-              time={chat.lastMessage ? formatTime(chat.lastMessage.timestamp) : ""}
-              unreadCount={chat.unreadCount}
-              online={contact?.online || false}
-            />
-          ))
+          chatsWithDetails.map(({ chat, contact }) => {
+            console.log("渲染聊天项:", { chatId: chat.id, contactName: contact?.name })
+            return (
+              <MessageListItem
+                key={chat.id}
+                id={chat.id}
+                avatar={contact?.avatar || "/placeholder.svg?height=48&width=48"}
+                name={contact?.name || "未知联系人"}
+                message={chat.lastMessage?.content || "暂无消息"}
+                time={chat.lastMessage ? formatTime(chat.lastMessage.timestamp) : ""}
+                unreadCount={chat.unreadCount}
+                online={contact?.online || false}
+              />
+            )
+          })
         )}
       </div>
     </div>
