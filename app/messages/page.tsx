@@ -1,93 +1,108 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Search, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { getCurrentUser } from "@/lib/auth"
-import { getUserChats, getContactById } from "@/lib/chat"
-import { useRouter } from "next/navigation"
 
-// 格式化最后在线时间
-function formatLastSeen(date?: Date) {
-  if (!date) return ""
-
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-
-  // 如果在线时间在5分钟内，显示"在线"
-  if (diff < 5 * 60 * 1000) return "在线"
-
-  // 如果是今天
-  if (date.toDateString() === now.toDateString()) {
-    return date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })
-  }
-
-  // 如果是昨天
-  const yesterday = new Date(now)
-  yesterday.setDate(yesterday.getDate() - 1)
-  if (date.toDateString() === yesterday.toDateString()) {
-    return "昨天"
-  }
-
-  // 其他日期
-  return date.toLocaleDateString("zh-CN", {
-    month: "numeric",
-    day: "numeric",
-  })
-}
+// 模拟聊天数据
+const mockChats = [
+  {
+    id: "chat_1",
+    contact: {
+      id: "doctor_chen",
+      name: "陈医生",
+      avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
+      online: true,
+    },
+    lastMessage: {
+      content: "您好，我现在有空，什么时候能带您家狗狗过来呢？",
+      timestamp: new Date("2025-06-04T11:00:00"),
+      isRead: false,
+    },
+    unreadCount: 1,
+  },
+  {
+    id: "chat_2",
+    contact: {
+      id: "user_bingyi",
+      name: "冰一",
+      avatar: "https://images.unsplash.com/photo-1494790108755-2616c9c9b8d4?w=150&h=150&fit=crop&crop=face",
+      online: false,
+    },
+    lastMessage: {
+      content: "猫猫在健康状态怎么样了呢",
+      timestamp: new Date("2025-06-04T10:47:00"),
+      isRead: false,
+    },
+    unreadCount: 10,
+  },
+  {
+    id: "chat_3",
+    contact: {
+      id: "vet_li",
+      name: "李兽医",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      online: true,
+    },
+    lastMessage: {
+      content: "记得按时给宠物服药哦，有任何问题随时联系我",
+      timestamp: new Date("2025-06-04T09:30:00"),
+      isRead: true,
+    },
+    unreadCount: 0,
+  },
+  {
+    id: "chat_4",
+    contact: {
+      id: "pet_store",
+      name: "宠物商店",
+      avatar: "https://images.unsplash.com/photo-1579197073550-bf44b469a6fe?w=150&h=150&fit=crop&crop=face",
+      online: true,
+    },
+    lastMessage: {
+      content: "您购买的宠物用品已发货，预计明天送达",
+      timestamp: new Date("2025-06-03T15:20:00"),
+      isRead: true,
+    },
+    unreadCount: 0,
+  },
+  {
+    id: "chat_5",
+    contact: {
+      id: "groomer_wang",
+      name: "王美容师",
+      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",
+      online: false,
+    },
+    lastMessage: {
+      content: "您的预约已确认，周六上午10点，请准时到店",
+      timestamp: new Date("2025-06-03T14:05:00"),
+      isRead: true,
+    },
+    unreadCount: 0,
+  },
+]
 
 export default function MessagesPage() {
-  const [user, setUser] = useState<any>(null)
-  const [chats, setChats] = useState<any[]>([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const currentUser = await getCurrentUser()
-        if (!currentUser) {
-          router.push("/auth/login")
-          return
-        }
-
-        setUser(currentUser)
-
-        const userChats = await getUserChats(currentUser.id)
-
-        // 预处理聊天数据，获取联系人信息
-        const chatsWithContacts = await Promise.all(
-          userChats.map(async (chat) => {
-            const otherParticipantId = chat.participants.find((id) => id !== currentUser.id)
-            const contact = otherParticipantId ? await getContactById(otherParticipantId) : null
-            return { chat, contact }
-          }),
-        )
-
-        setChats(chatsWithContacts)
-      } catch (error) {
-        console.error("加载数据失败:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadData()
-  }, [router])
-
-  const filteredChats = chats.filter(
-    ({ contact }) => !searchQuery || (contact?.name && contact.name.toLowerCase().includes(searchQuery.toLowerCase())),
+  const filteredChats = mockChats.filter(
+    (chat) =>
+      chat.contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      chat.lastMessage.content.toLowerCase().includes(searchQuery.toLowerCase()),
   )
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p>加载中...</p>
-      </div>
-    )
+  const formatTime = (date: Date) => {
+    const today = new Date()
+    const isToday = date.toDateString() === today.toDateString()
+
+    if (isToday) {
+      return date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })
+    } else {
+      return date.toLocaleDateString("zh-CN", { month: "numeric", day: "numeric" })
+    }
   }
 
   return (
@@ -117,7 +132,7 @@ export default function MessagesPage() {
             <p className="text-muted-foreground">暂无消息</p>
           </div>
         ) : (
-          filteredChats.map(({ chat, contact }) => (
+          filteredChats.map((chat) => (
             <Link
               key={chat.id}
               href={`/messages/${chat.id}`}
@@ -125,24 +140,21 @@ export default function MessagesPage() {
             >
               <div className="relative">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage
-                    src={contact?.avatar || "/placeholder.svg?height=48&width=48&query=user"}
-                    alt={contact?.name || "用户"}
-                  />
-                  <AvatarFallback>{(contact?.name || "用户").charAt(0)}</AvatarFallback>
+                  <AvatarImage src={chat.contact.avatar || "/placeholder.svg"} alt={chat.contact.name} />
+                  <AvatarFallback>{chat.contact.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
-                {contact?.online && (
+                {chat.contact.online && (
                   <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
                 )}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-center">
-                  <h3 className="font-medium truncate">{contact?.name || "用户"}</h3>
+                  <h3 className="font-medium truncate">{chat.contact.name}</h3>
                   <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {chat.lastMessage?.timestamp ? formatLastSeen(chat.lastMessage.timestamp) : ""}
+                    {formatTime(chat.lastMessage.timestamp)}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground truncate">{chat.lastMessage?.content || "暂无消息"}</p>
+                <p className="text-sm text-muted-foreground truncate">{chat.lastMessage.content}</p>
               </div>
               {chat.unreadCount > 0 && (
                 <div className="min-w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs text-white px-1">
