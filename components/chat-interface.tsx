@@ -224,16 +224,16 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
             <Avatar>
               <AvatarImage
                 src={contact?.avatar || "/placeholder.svg?height=40&width=40&query=user"}
-                alt={contact?.name || "用户"}
+                alt={contact?.name || "未知联系人"}
               />
-              <AvatarFallback>{(contact?.name || "用户").charAt(0)}</AvatarFallback>
+              <AvatarFallback>{(contact?.name || "?").charAt(0)}</AvatarFallback>
             </Avatar>
             {contact?.online && (
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
             )}
           </div>
           <div>
-            <h1 className="font-medium">{contact?.name || "用户"}</h1>
+            <h1 className="font-medium">{contact?.name || "未知联系人"}</h1>
             <p className="text-xs text-muted-foreground">
               {contact?.online ? "在线" : `最后在线: ${formatLastSeen(contact?.lastSeen)}`}
             </p>
@@ -269,9 +269,9 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
                   <Avatar className="w-8 h-8">
                     <AvatarImage
                       src={messageContact?.avatar || "/placeholder.svg?height=32&width=32&query=user"}
-                      alt={messageContact?.name || "用户"}
+                      alt={messageContact?.name || "未知联系人"}
                     />
-                    <AvatarFallback>{(messageContact?.name || "用户").charAt(0)}</AvatarFallback>
+                    <AvatarFallback>{(messageContact?.name || "?").charAt(0)}</AvatarFallback>
                   </Avatar>
                   <div
                     className={`rounded-lg px-3 py-2 ${

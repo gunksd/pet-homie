@@ -1,10 +1,10 @@
 import { getCurrentUser } from "@/lib/auth"
 import { redirect } from "next/navigation"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Input } from "@/components/ui/input"
 import { Search, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { getUserChats, getContactById } from "@/lib/chat"
+import { MessageListItem } from "@/components/message-list-item"
 
 // 格式化时间显示
 function formatTime(date: Date) {
@@ -75,38 +75,16 @@ export default async function MessagesPage() {
           </div>
         ) : (
           chatsWithContacts.map(({ chat, contact }) => (
-            <Link
+            <MessageListItem
               key={chat.id}
-              href={`/messages/${chat.id}`}
-              className="flex items-center gap-3 p-4 hover:bg-gray-50 border-b"
-            >
-              <div className="relative">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage
-                    src={contact?.avatar || "/placeholder.svg?height=48&width=48&query=user"}
-                    alt={contact?.name || "用户"}
-                  />
-                  <AvatarFallback>{(contact?.name || "用户").charAt(0)}</AvatarFallback>
-                </Avatar>
-                {contact?.online && (
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-medium truncate">{contact?.name || "用户"}</h3>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
-                    {chat.lastMessage ? formatTime(chat.lastMessage.timestamp) : ""}
-                  </span>
-                </div>
-                <p className="text-sm text-muted-foreground truncate">{chat.lastMessage?.content || "暂无消息"}</p>
-              </div>
-              {chat.unreadCount > 0 && (
-                <div className="min-w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs text-white px-1">
-                  {chat.unreadCount > 99 ? "99+" : chat.unreadCount}
-                </div>
-              )}
-            </Link>
+              id={chat.id}
+              avatar={contact?.avatar || "/placeholder.svg?height=48&width=48"}
+              name={contact?.name || "未知联系人"}
+              message={chat.lastMessage?.content || "暂无消息"}
+              time={chat.lastMessage ? formatTime(chat.lastMessage.timestamp) : ""}
+              unreadCount={chat.unreadCount}
+              online={contact?.online || false}
+            />
           ))
         )}
       </div>

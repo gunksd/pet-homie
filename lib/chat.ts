@@ -37,7 +37,7 @@ export interface User {
   avatar?: string
 }
 
-// 模拟数据库 - 添加更多联系人
+// 模拟数据库 - 添加更多联系人，确保每个联系人都有独特的名称和头像
 const contacts: Contact[] = [
   {
     id: "doctor_chen",
@@ -72,7 +72,7 @@ const contacts: Contact[] = [
   },
   {
     id: "adoption_center",
-    name: "领养中心",
+    name: "领养中心小李",
     avatar: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=150&h=150&fit=crop&crop=face",
     online: false,
     lastSeen: new Date("2025-06-04T14:20:00"),
