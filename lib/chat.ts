@@ -257,10 +257,10 @@ const messages: Message[] = [
     read: true,
   },
 
-  // 与兽医王晓明的对话
+  // 与兽医王晓明的对话 - 修复chatId
   {
     id: "msg_vet_1",
-    chatId: "chat_vet",
+    chatId: "chat_vet_li",
     senderId: "vet_li",
     content: "您好，关于豆豆的疫苗接种，建议下周二过来",
     timestamp: new Date("2025-06-04T15:30:00"),
@@ -269,7 +269,7 @@ const messages: Message[] = [
   },
   {
     id: "msg_vet_2",
-    chatId: "chat_vet",
+    chatId: "chat_vet_li",
     senderId: "1",
     content: "好的，大概几点比较合适？",
     timestamp: new Date("2025-06-04T15:35:00"),
@@ -278,7 +278,7 @@ const messages: Message[] = [
   },
   {
     id: "msg_vet_3",
-    chatId: "chat_vet",
+    chatId: "chat_vet_li",
     senderId: "vet_li",
     content: "上午10点到11点之间都可以，记得带上疫苗本",
     timestamp: new Date("2025-06-04T15:40:00"),
@@ -322,11 +322,11 @@ const chats: Chat[] = [
     updatedAt: new Date("2025-06-04T16:22:00"),
   },
   {
-    id: "chat_vet",
+    id: "chat_vet_li",
     participants: ["1", "vet_li"],
     lastMessage: {
       id: "msg_vet_3",
-      chatId: "chat_vet",
+      chatId: "chat_vet_li",
       senderId: "vet_li",
       content: "上午10点到11点之间都可以，记得带上疫苗本",
       timestamp: new Date("2025-06-04T15:40:00"),
