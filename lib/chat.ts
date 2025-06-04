@@ -28,7 +28,7 @@ export interface Chat {
   updatedAt: Date
 }
 
-// 模拟数据库
+// 模拟数据库 - 添加更多联系人
 const contacts: Contact[] = [
   {
     id: "doctor_chen",
@@ -55,9 +55,38 @@ const contacts: Contact[] = [
     avatar: "https://images.unsplash.com/photo-1679958157996-3c1d7c1c0a88?w=150&h=150&fit=crop&crop=face",
     online: true,
   },
+  {
+    id: "pet_shop",
+    name: "宠物商店客服",
+    avatar: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=150&h=150&fit=crop&crop=face",
+    online: true,
+  },
+  {
+    id: "adoption_center",
+    name: "领养中心",
+    avatar: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=150&h=150&fit=crop&crop=face",
+    online: false,
+    lastSeen: new Date("2025-06-04T14:20:00"),
+  },
+  {
+    id: "groomer_wang",
+    name: "美容师小王",
+    avatar: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&crop=face",
+    online: false,
+    lastSeen: new Date("2025-06-03T16:30:00"),
+  },
+  {
+    id: "neighbor_zhang",
+    name: "邻居张阿姨",
+    avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face",
+    online: false,
+    lastSeen: new Date("2025-06-04T09:15:00"),
+  },
 ]
 
+// 添加更多消息
 const messages: Message[] = [
+  // 与医生的对话
   {
     id: "msg_1",
     chatId: "chat_1",
@@ -76,6 +105,8 @@ const messages: Message[] = [
     type: "text",
     read: true,
   },
+
+  // 与冰一的对话
   {
     id: "msg_3",
     chatId: "chat_2",
@@ -94,27 +125,10 @@ const messages: Message[] = [
     type: "text",
     read: true,
   },
+
   // AI助手对话
   {
     id: "msg_5",
-    chatId: "chat_ai",
-    senderId: "1", // 当前用户
-    content: "猫猫的健康状态怎么样了呢",
-    timestamp: new Date("2025-06-04T18:47:00"),
-    type: "text",
-    read: true,
-  },
-  {
-    id: "msg_6",
-    chatId: "chat_ai",
-    senderId: "ai_assistant",
-    content: "小橘最近状态很好，食欲也恢复了",
-    timestamp: new Date("2025-06-04T18:50:00"),
-    type: "text",
-    read: true,
-  },
-  {
-    id: "msg_7",
     chatId: "chat_ai",
     senderId: "1", // 当前用户
     content: "您好，请问现在方便聊天吗？",
@@ -122,8 +136,80 @@ const messages: Message[] = [
     type: "text",
     read: true,
   },
+  {
+    id: "msg_6",
+    chatId: "chat_ai",
+    senderId: "ai_assistant",
+    content: "您好！我是AI宠物助手，随时为您服务。请问有什么可以帮助您的吗？",
+    timestamp: new Date("2025-06-04T19:38:30"),
+    type: "text",
+    read: true,
+  },
+
+  // 宠物商店对话
+  {
+    id: "msg_7",
+    chatId: "chat_shop",
+    senderId: "pet_shop",
+    content: "您好！您昨天下单的宠物零食已经发货啦～运单号：SF1234567890",
+    timestamp: new Date("2025-06-04T16:22:00"),
+    type: "text",
+    read: false,
+  },
+
+  // 领养中心对话
+  {
+    id: "msg_8",
+    chatId: "chat_adoption",
+    senderId: "adoption_center",
+    content: "感谢您对小白的关注，请问您方便明天来看看它吗？",
+    timestamp: new Date("2025-06-04T14:20:00"),
+    type: "text",
+    read: false,
+  },
+  {
+    id: "msg_9",
+    chatId: "chat_adoption",
+    senderId: "1",
+    content: "好的，我明天下午有时间",
+    timestamp: new Date("2025-06-04T14:25:00"),
+    type: "text",
+    read: true,
+  },
+
+  // 美容师对话
+  {
+    id: "msg_10",
+    chatId: "chat_groomer",
+    senderId: "groomer_wang",
+    content: "豆豆的美容已经完成啦，您可以来接它了～今天表现很好呢",
+    timestamp: new Date("2025-06-03T16:30:00"),
+    type: "text",
+    read: true,
+  },
+
+  // 邻居对话
+  {
+    id: "msg_11",
+    chatId: "chat_neighbor",
+    senderId: "neighbor_zhang",
+    content: "今天早上看到您家小橘在阳台上晒太阳，真可爱～",
+    timestamp: new Date("2025-06-04T09:15:00"),
+    type: "text",
+    read: true,
+  },
+  {
+    id: "msg_12",
+    chatId: "chat_neighbor",
+    senderId: "1",
+    content: "哈哈，它最喜欢晒太阳了",
+    timestamp: new Date("2025-06-04T09:20:00"),
+    type: "text",
+    read: true,
+  },
 ]
 
+// 更新聊天列表
 const chats: Chat[] = [
   {
     id: "chat_1",
@@ -134,6 +220,30 @@ const chats: Chat[] = [
     updatedAt: new Date("2025-06-04T11:05:00"),
   },
   {
+    id: "chat_shop",
+    participants: ["1", "pet_shop"],
+    lastMessage: messages.find((m) => m.id === "msg_7"),
+    unreadCount: 1,
+    createdAt: new Date("2025-06-04T16:00:00"),
+    updatedAt: new Date("2025-06-04T16:22:00"),
+  },
+  {
+    id: "chat_adoption",
+    participants: ["1", "adoption_center"],
+    lastMessage: messages.find((m) => m.id === "msg_9"),
+    unreadCount: 1,
+    createdAt: new Date("2025-06-04T14:00:00"),
+    updatedAt: new Date("2025-06-04T14:25:00"),
+  },
+  {
+    id: "chat_ai",
+    participants: ["1", "ai_assistant"],
+    lastMessage: messages.find((m) => m.id === "msg_6"),
+    unreadCount: 0,
+    createdAt: new Date("2025-06-04T18:00:00"),
+    updatedAt: new Date("2025-06-04T19:38:30"),
+  },
+  {
     id: "chat_2",
     participants: ["1", "user_bingyi"],
     lastMessage: messages.find((m) => m.id === "msg_4"),
@@ -142,12 +252,20 @@ const chats: Chat[] = [
     updatedAt: new Date("2025-06-04T10:50:00"),
   },
   {
-    id: "chat_ai",
-    participants: ["1", "ai_assistant"],
-    lastMessage: messages.find((m) => m.id === "msg_7"),
+    id: "chat_groomer",
+    participants: ["1", "groomer_wang"],
+    lastMessage: messages.find((m) => m.id === "msg_10"),
     unreadCount: 0,
-    createdAt: new Date("2025-06-04T18:00:00"),
-    updatedAt: new Date("2025-06-04T19:38:00"),
+    createdAt: new Date("2025-06-03T16:00:00"),
+    updatedAt: new Date("2025-06-03T16:30:00"),
+  },
+  {
+    id: "chat_neighbor",
+    participants: ["1", "neighbor_zhang"],
+    lastMessage: messages.find((m) => m.id === "msg_12"),
+    unreadCount: 0,
+    createdAt: new Date("2025-06-04T09:00:00"),
+    updatedAt: new Date("2025-06-04T09:20:00"),
   },
 ]
 
