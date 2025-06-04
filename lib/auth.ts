@@ -94,7 +94,7 @@ export async function signIn(email: string, password: string): Promise<User> {
 
     // 确保用户ID是 "1"，与聊天数据匹配
     const cookieStore = cookies()
-    cookieStore.set("user_id", "1", {
+    cookieStore.set("user_id", user.id, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
@@ -198,14 +198,12 @@ export async function deleteUser(userId: string): Promise<void> {
 
 // 初始化默认用户（仅在开发环境）
 export async function initializeDefaultUser(): Promise<void> {
-  if (process.env.NODE_ENV !== "development") return
-
   try {
     const existingUser = await getUserByEmail("pet@example.com")
     if (existingUser) return
 
     const defaultUser: User = {
-      id: "default-user-1",
+      id: "1",
       name: "宠物爱好者",
       email: "pet@example.com",
       password: "123456",
