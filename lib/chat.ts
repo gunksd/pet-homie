@@ -45,14 +45,14 @@ const contacts: Contact[] = [
   {
     id: "ai_assistant", // AI助手的联系人ID
     name: "AI宠物助手",
-    avatar: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=150&h=150&fit=crop&crop=face",
+    avatar: "/placeholder.svg?height=150&width=150",
     online: true,
     role: "assistant",
   },
   {
     id: "vet_li",
     name: "王晓明兽医",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+    avatar: "/placeholder.svg?height=150&width=150",
     online: true,
     lastSeen: new Date(),
     role: "veterinarian",
@@ -132,7 +132,7 @@ const messages: Message[] = [
     id: "msg_vet_4",
     chatId: "chat_vet_li",
     senderId: "vet_li",
-    content: "上午10点到11点之间都可以，记得带上疫苗本",
+    content: "下周二上午10点怎么样？记得带上疫苗本哦",
     timestamp: new Date(Date.now() - 1800000), // 30分钟前
     read: false,
   },
@@ -181,9 +181,16 @@ export async function getChatById(chatId: string): Promise<Chat | null> {
   }
 }
 
-// 获取聊天消息
+// 确保消息的 timestamp 是有效的 Date 对象
 export async function getChatMessages(chatId: string): Promise<Message[]> {
-  return messages.filter((msg) => msg.chatId === chatId).sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
+  return messages
+    .filter((msg) => msg.chatId === chatId)
+    .map((msg) => ({
+      ...msg,
+      // 确保 timestamp 是 Date 对象
+      timestamp: msg.timestamp instanceof Date ? msg.timestamp : new Date(msg.timestamp),
+    }))
+    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
 }
 
 // 获取联系人详情
@@ -202,7 +209,7 @@ export async function markMessagesAsRead(chatId: string, userId: string): Promis
   })
 }
 
-// 发送消息
+// 同样确保发送消息时 timestamp 是 Date 对象
 export async function sendMessage(chatId: string, senderId: string, content: string): Promise<Message> {
   const newMessage: Message = {
     id: `msg_${Date.now()}`,

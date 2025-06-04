@@ -41,7 +41,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#0ea5e9" />
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <div className="relative flex flex-col max-w-md mx-auto min-h-screen">
             {children}
             <BottomNav />

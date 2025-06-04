@@ -67,6 +67,7 @@ const faqData = [
 
 export default function AIAssistantPage() {
   const [loading, setLoading] = useState(false)
+  const [generatingReport, setGeneratingReport] = useState(false)
   const [selectedPetIndex, setSelectedPetIndex] = useState(0)
   const [report, setReport] = useState("")
   const [error, setError] = useState("")
@@ -76,7 +77,7 @@ export default function AIAssistantPage() {
   const { toast } = useToast()
 
   const handleGenerateReport = async () => {
-    setLoading(true)
+    setGeneratingReport(true)
     setError("")
 
     try {
@@ -113,7 +114,7 @@ export default function AIAssistantPage() {
         variant: "destructive",
       })
     } finally {
-      setLoading(false)
+      setGeneratingReport(false)
     }
   }
 
@@ -323,8 +324,8 @@ export default function AIAssistantPage() {
                     <h3 className="font-medium">完整健康报告</h3>
                     <p className="text-sm text-muted-foreground">基于症状生成专业的健康评估报告</p>
                   </div>
-                  <Button onClick={handleGenerateReport} disabled={loading} className="min-w-20">
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "生成"}
+                  <Button onClick={handleGenerateReport} disabled={generatingReport || loading} className="min-w-20">
+                    {generatingReport ? <Loader2 className="h-4 w-4 animate-spin" /> : "生成"}
                   </Button>
                 </div>
               </CardContent>
@@ -340,8 +341,13 @@ export default function AIAssistantPage() {
                     <h3 className="font-medium">健康评估</h3>
                     <p className="text-sm text-muted-foreground">日常健康检查指南和异常信号识别</p>
                   </div>
-                  <Button onClick={handleHealthAssessment} disabled={loading} variant="outline" className="min-w-20">
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "评估"}
+                  <Button
+                    onClick={handleHealthAssessment}
+                    disabled={generatingReport || loading}
+                    variant="outline"
+                    className="min-w-20"
+                  >
+                    评估
                   </Button>
                 </div>
               </CardContent>
@@ -357,8 +363,13 @@ export default function AIAssistantPage() {
                     <h3 className="font-medium">护理建议</h3>
                     <p className="text-sm text-muted-foreground">个性化的日常护理和营养管理方案</p>
                   </div>
-                  <Button onClick={handleCareAdvice} disabled={loading} variant="outline" className="min-w-20">
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "建议"}
+                  <Button
+                    onClick={handleCareAdvice}
+                    disabled={generatingReport || loading}
+                    variant="outline"
+                    className="min-w-20"
+                  >
+                    建议
                   </Button>
                 </div>
               </CardContent>

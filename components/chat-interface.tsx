@@ -192,57 +192,82 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     handleSendMessage()
   }
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("zh-CN", {
+  // 修改 formatTime 函数，确保它处理的是有效的 Date 对象
+  const formatTime = (date: Date | string | number) => {
+    // 确保 date 是一个有效的 Date 对象
+    const validDate = date instanceof Date ? date : new Date(date)
+
+    // 检查是否为有效日期
+    if (isNaN(validDate.getTime())) {
+      return "未知时间"
+    }
+
+    return validDate.toLocaleTimeString("zh-CN", {
       hour: "2-digit",
       minute: "2-digit",
     })
   }
 
-  const formatDate = (date: Date) => {
-    const today = new Date()
-    const messageDate = new Date(date)
+  // 同样修改 formatDate 函数
+  const formatDate = (date: Date | string | number) => {
+    // 确保 date 是一个有效的 Date 对象
+    const validDate = date instanceof Date ? date : new Date(date)
 
-    if (messageDate.toDateString() === today.toDateString()) {
+    // 检查是否为有效日期
+    if (isNaN(validDate.getTime())) {
+      return "未知日期"
+    }
+
+    const today = new Date()
+
+    if (validDate.toDateString() === today.toDateString()) {
       return "今天"
     }
 
     const yesterday = new Date(today)
     yesterday.setDate(yesterday.getDate() - 1)
-    if (messageDate.toDateString() === yesterday.toDateString()) {
+    if (validDate.toDateString() === yesterday.toDateString()) {
       return "昨天"
     }
 
-    return messageDate.toLocaleDateString("zh-CN", {
+    return validDate.toLocaleDateString("zh-CN", {
       month: "short",
       day: "numeric",
     })
   }
 
-  // 格式化最后在线时间
-  const formatLastSeen = (date?: Date) => {
+  // 同样修改 formatLastSeen 函数
+  const formatLastSeen = (date?: Date | string | number) => {
     if (!date) return "离线"
 
+    // 确保 date 是一个有效的 Date 对象
+    const validDate = date instanceof Date ? date : new Date(date)
+
+    // 检查是否为有效日期
+    if (isNaN(validDate.getTime())) {
+      return "未知状态"
+    }
+
     const now = new Date()
-    const diff = now.getTime() - date.getTime()
+    const diff = now.getTime() - validDate.getTime()
 
     // 如果在线时间在5分钟内，显示"在线"
     if (diff < 5 * 60 * 1000) return "在线"
 
     // 如果是今天
-    if (date.toDateString() === now.toDateString()) {
-      return `今天 ${date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
+    if (validDate.toDateString() === now.toDateString()) {
+      return `今天 ${validDate.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
     }
 
     // 如果是昨天
     const yesterday = new Date(now)
     yesterday.setDate(yesterday.getDate() - 1)
-    if (date.toDateString() === yesterday.toDateString()) {
-      return `昨天 ${date.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
+    if (validDate.toDateString() === yesterday.toDateString()) {
+      return `昨天 ${validDate.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}`
     }
 
     // 其他日期
-    return date.toLocaleDateString("zh-CN", {
+    return validDate.toLocaleDateString("zh-CN", {
       month: "numeric",
       day: "numeric",
       hour: "2-digit",
