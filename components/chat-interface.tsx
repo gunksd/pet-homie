@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, Send, Phone, Video, MoreVertical } from "lucide-react"
+import { ArrowLeft, Send, Phone, Video, MoreVertical, ImageIcon } from "lucide-react"
 import Link from "next/link"
 import type { Chat, Message, Contact, User } from "@/lib/chat"
 import { sendMessage, markMessagesAsRead } from "@/lib/chat"
@@ -144,7 +144,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
       </div>
 
       {/* 消息列表 */}
-      <div className="flex-1 overflow-auto p-4 space-y-4">
+      <div className="flex-1 overflow-auto p-4 space-y-4 bg-gray-50">
         {messages.map((message, index) => {
           const isCurrentUser = message.senderId === currentUser.id
           const showDate = index === 0 || formatDate(message.timestamp) !== formatDate(messages[index - 1].timestamp)
@@ -164,12 +164,12 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
                   )}
                   <div
                     className={`rounded-lg px-3 py-2 ${
-                      isCurrentUser ? "bg-primary text-primary-foreground" : "bg-muted"
+                      isCurrentUser ? "bg-primary text-primary-foreground" : "bg-white"
                     }`}
                   >
                     <p className="text-sm">{message.content}</p>
                     <p
-                      className={`text-xs mt-1 ${
+                      className={`text-xs mt-1 text-right ${
                         isCurrentUser ? "text-primary-foreground/70" : "text-muted-foreground"
                       }`}
                     >
@@ -194,7 +194,7 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
                 key={index}
                 variant="outline"
                 size="sm"
-                className="text-xs h-8"
+                className="text-xs h-8 bg-white"
                 onClick={() => handleSendMessage(preset)}
                 disabled={sending}
               >
@@ -207,15 +207,18 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
 
       {/* 消息输入框 */}
       <div className="border-t bg-white p-4">
-        <form onSubmit={handleSubmit} className="flex gap-2">
+        <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+          <Button type="button" variant="ghost" size="icon" className="text-muted-foreground">
+            <ImageIcon className="h-5 w-5" />
+          </Button>
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="输入消息..."
-            className="flex-1"
+            className="flex-1 bg-gray-100"
             disabled={sending}
           />
-          <Button type="submit" size="icon" disabled={!newMessage.trim() || sending}>
+          <Button type="submit" size="icon" disabled={!newMessage.trim() || sending} className="rounded-full">
             <Send className="h-4 w-4" />
           </Button>
         </form>
