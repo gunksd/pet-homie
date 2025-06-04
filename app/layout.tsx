@@ -15,7 +15,12 @@ export const metadata = {
   title: "宠物妙妙屋",
   description: "宠物服务医疗一体化系统",
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      {
+        url: "/favicon.svg",
+        type: "image/svg+xml",
+      },
+    ],
     shortcut: "/favicon.svg",
     apple: "/favicon.svg",
   },
@@ -33,6 +38,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="shortcut icon" href="/favicon.svg" />
         <link rel="apple-touch-icon" href="/favicon.svg" />
+        <meta name="theme-color" content="#0ea5e9" />
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>

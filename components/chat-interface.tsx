@@ -23,8 +23,17 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
   const [messages, setMessages] = useState(initialMessages)
   const [newMessage, setNewMessage] = useState("")
   const [sending, setSending] = useState(false)
+  const [showPresetMessages, setShowPresetMessages] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { toast } = useToast()
+
+  // 预设消息
+  const presetMessages = [
+    "您好，请问现在方便聊天吗？",
+    "我家宠物的情况怎么样了？",
+    "什么时候可以安排下次检查？",
+    "谢谢您的专业建议！",
+  ]
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -39,15 +48,19 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     markMessagesAsRead(chat.id, currentUser.id)
   }, [chat.id, currentUser.id])
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newMessage.trim() || sending) return
+  const handleSendMessage = async (messageContent?: string) => {
+    const content = messageContent || newMessage.trim()
+    if (!content || sending) return
 
     setSending(true)
+    setShowPresetMessages(false)
+
     try {
-      const message = await sendMessage(chat.id, currentUser.id, newMessage.trim())
+      const message = await sendMessage(chat.id, currentUser.id, content)
       setMessages((prev) => [...prev, message])
-      setNewMessage("")
+      if (!messageContent) {
+        setNewMessage("")
+      }
     } catch (error) {
       toast({
         title: "发送失败",
@@ -57,6 +70,11 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
     } finally {
       setSending(false)
     }
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleSendMessage()
   }
 
   const formatTime = (date: Date) => {
@@ -166,9 +184,30 @@ export function ChatInterface({ chat, messages: initialMessages, currentUser, co
         <div ref={messagesEndRef} />
       </div>
 
+      {/* 预设消息 */}
+      {showPresetMessages && messages.length <= 2 && (
+        <div className="px-4 py-2 border-t bg-gray-50">
+          <p className="text-xs text-muted-foreground mb-2">快捷回复：</p>
+          <div className="flex flex-wrap gap-2">
+            {presetMessages.map((preset, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                className="text-xs h-8"
+                onClick={() => handleSendMessage(preset)}
+                disabled={sending}
+              >
+                {preset}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* 消息输入框 */}
       <div className="border-t bg-white p-4">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+        <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}

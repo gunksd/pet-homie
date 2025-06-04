@@ -3,7 +3,17 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Loader2, Sparkles, AlertCircle, FileText, Activity, Heart } from "lucide-react"
+import {
+  ArrowLeft,
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  FileText,
+  Activity,
+  Heart,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { generatePetReport } from "@/lib/ai"
@@ -11,6 +21,7 @@ import { generateHealthAssessment, generateCareAdvice } from "@/lib/ai-features"
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { PetReportDialog } from "@/components/pet-report-dialog"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 // 预设的用户宠物数据
 const userPets = [
@@ -34,6 +45,25 @@ const userPets = [
   },
 ]
 
+// 常见问题数据
+const faqData = [
+  {
+    question: "我的狗狗不爱吃东西怎么办？",
+    answer:
+      "狗狗食欲不振可能有多种原因：1. 检查食物是否新鲜；2. 观察是否有其他症状如发热、呕吐；3. 尝试更换食物或调整喂食时间；4. 如果持续超过24小时建议就医检查。",
+  },
+  {
+    question: "猫咪掉毛严重是什么原因？",
+    answer:
+      "猫咪掉毛的常见原因：1. 季节性换毛（春秋季节）；2. 营养不良或缺乏必需脂肪酸；3. 压力或环境变化；4. 皮肤疾病或过敏；5. 年龄因素。建议定期梳理，提供营养均衡的食物。",
+  },
+  {
+    question: "宠物疫苗接种时间表",
+    answer:
+      "幼犬/幼猫疫苗计划：6-8周龄首次疫苗；10-12周龄第二次疫苗；14-16周龄第三次疫苗；之后每年加强免疫一次。狂犬疫苗通常在12-16周龄接种，此后每年或每三年加强（根据当地法规）。",
+  },
+]
+
 export default function AIAssistantPage() {
   const [loading, setLoading] = useState(false)
   const [selectedPetIndex, setSelectedPetIndex] = useState(0)
@@ -41,6 +71,7 @@ export default function AIAssistantPage() {
   const [error, setError] = useState("")
   const [showReportDialog, setShowReportDialog] = useState(false)
   const [dialogTitle, setDialogTitle] = useState("")
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const { toast } = useToast()
 
   const handleGenerateReport = async () => {
@@ -281,21 +312,35 @@ export default function AIAssistantPage() {
         <div className="mt-6">
           <h2 className="text-lg font-medium mb-4">常见问题</h2>
           <div className="space-y-3">
-            <Card className="cursor-pointer hover:bg-muted/50">
-              <CardContent className="p-3">
-                <p className="text-sm">我的狗狗不爱吃东西怎么办？</p>
-              </CardContent>
-            </Card>
-            <Card className="cursor-pointer hover:bg-muted/50">
-              <CardContent className="p-3">
-                <p className="text-sm">猫咪掉毛严重是什么原因？</p>
-              </CardContent>
-            </Card>
-            <Card className="cursor-pointer hover:bg-muted/50">
-              <CardContent className="p-3">
-                <p className="text-sm">宠物疫苗接种时间表</p>
-              </CardContent>
-            </Card>
+            {faqData.map((faq, index) => (
+              <Collapsible
+                key={index}
+                open={expandedFaq === index}
+                onOpenChange={(isOpen) => setExpandedFaq(isOpen ? index : null)}
+              >
+                <Card className="overflow-hidden">
+                  <CollapsibleTrigger asChild>
+                    <CardContent className="p-3 cursor-pointer hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium">{faq.question}</p>
+                        {expandedFaq === index ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                    </CardContent>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="px-3 pb-3">
+                      <div className="pt-2 border-t">
+                        <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+                      </div>
+                    </div>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
+            ))}
           </div>
         </div>
       </div>
