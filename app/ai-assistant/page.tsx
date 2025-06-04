@@ -16,8 +16,9 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { generatePetReport } from "@/lib/ai"
-import { generateHealthAssessment, generateCareAdvice } from "@/lib/ai-features"
+// 移除这些导入，因为现在使用API路由
+// import { generatePetReport } from "@/lib/ai"
+// import { generateHealthAssessment, generateCareAdvice } from "@/lib/ai-features"
 import { useToast } from "@/components/ui/use-toast"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { PetReportDialog } from "@/components/pet-report-dialog"
@@ -80,8 +81,22 @@ export default function AIAssistantPage() {
 
     try {
       console.log("开始生成健康报告...", { selectedPetIndex })
-      const result = await generatePetReport(selectedPetIndex)
-      setReport(result)
+
+      const response = await fetch("/api/ai/pet-report", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ petIndex: selectedPetIndex }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "生成报告失败")
+      }
+
+      const data = await response.json()
+      setReport(data.report)
       setDialogTitle(`${userPets[selectedPetIndex].name}的健康报告`)
       setShowReportDialog(true)
       toast({
@@ -109,8 +124,25 @@ export default function AIAssistantPage() {
     try {
       console.log("开始生成健康评估...")
       const selectedPet = userPets[selectedPetIndex]
-      const result = await generateHealthAssessment(selectedPet.name, selectedPet.type)
-      setReport(result)
+
+      const response = await fetch("/api/ai/health-assessment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          petName: selectedPet.name,
+          petType: selectedPet.type,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "生成健康评估失败")
+      }
+
+      const data = await response.json()
+      setReport(data.report)
       setDialogTitle(`${selectedPet.name}的健康评估`)
       setShowReportDialog(true)
       toast({
@@ -138,8 +170,25 @@ export default function AIAssistantPage() {
     try {
       console.log("开始生成护理建议...")
       const selectedPet = userPets[selectedPetIndex]
-      const result = await generateCareAdvice(selectedPet.name, selectedPet.type)
-      setReport(result)
+
+      const response = await fetch("/api/ai/care-advice", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          petName: selectedPet.name,
+          petType: selectedPet.type,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "生成护理建议失败")
+      }
+
+      const data = await response.json()
+      setReport(data.report)
       setDialogTitle(`${selectedPet.name}的护理建议`)
       setShowReportDialog(true)
       toast({
