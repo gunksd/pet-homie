@@ -12,7 +12,7 @@ export default function MessagesPage() {
     {
       id: "chat_ai",
       name: "AI宠物助手",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=150&h=150&fit=crop&crop=face",
       lastMessage: "有什么可以帮助您的吗？",
       timestamp: "刚刚",
       unreadCount: 0,
@@ -21,7 +21,7 @@ export default function MessagesPage() {
     {
       id: "chat_vet_li",
       name: "王晓明兽医",
-      avatar: "/placeholder.svg?height=40&width=40",
+      avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
       lastMessage: "下周二上午10点怎么样？记得带上疫苗本哦",
       timestamp: "30分钟前",
       unreadCount: 1,

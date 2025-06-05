@@ -207,7 +207,7 @@ export async function initializeDefaultUser(): Promise<void> {
       name: "宠物爱好者",
       email: "pet@example.com",
       password: "123456",
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616c9c9b8d4?w=150&h=150&fit=crop&crop=face",
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       phone: "13800138000",
       createdAt: new Date("2024-01-01"),
     }

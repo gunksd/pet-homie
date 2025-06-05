@@ -37,7 +37,7 @@ const users: User[] = [
     id: "1",
     name: "张小明",
     email: "pet@example.com",
-    avatar: "/placeholder.svg?height=32&width=32",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
   },
 ]
 
@@ -45,14 +45,14 @@ const contacts: Contact[] = [
   {
     id: "ai_assistant", // AI助手的联系人ID
     name: "AI宠物助手",
-    avatar: "/placeholder.svg?height=150&width=150",
+    avatar: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=150&h=150&fit=crop&crop=face",
     online: true,
     role: "assistant",
   },
   {
     id: "vet_li",
     name: "王晓明兽医",
-    avatar: "/placeholder.svg?height=150&width=150",
+    avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face",
     online: true,
     lastSeen: new Date(),
     role: "veterinarian",
