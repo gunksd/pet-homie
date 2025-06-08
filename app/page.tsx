@@ -24,7 +24,7 @@ export default function HomePage() {
               <AvatarFallback className="bg-white text-blue-600">管</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="font-bold">早上好，管理员</h1>
+              <h1 className="font-bold">你好管理员</h1>
               <p className="text-sm opacity-90">今天是个照顾宠物的好日子</p>
             </div>
           </div>
@@ -172,29 +172,31 @@ export default function HomePage() {
               更多文章
             </Link>
           </div>
-          <Card className="bg-card border-border">
-            <CardContent className="p-4">
-              <div className="flex gap-3">
-                <div className="relative w-20 h-16 rounded-lg overflow-hidden">
-                  <Image
-                    src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&h=200&fit=crop"
-                    alt="宠物护理"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-medium text-sm text-foreground mb-1">春季宠物护理指南</h3>
-                  <p className="text-xs text-muted-foreground mb-2">春天来了，如何为你的宠物做好季节性护理...</p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>宠物专家</span>
-                    <span>·</span>
-                    <span>2小时前</span>
+          <Link href="/news/5">
+            <Card className="bg-card border-border hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex gap-3">
+                  <div className="relative w-20 h-16 rounded-lg overflow-hidden">
+                    <Image
+                      src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=200&h=200&fit=crop"
+                      alt="春季宠物护理"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-sm text-foreground mb-1">春季宠物护理指南</h3>
+                    <p className="text-xs text-muted-foreground mb-2">春天来了，如何为你的宠物做好季节性护理...</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span>宠物专家</span>
+                      <span>·</span>
+                      <span>2小时前</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         </section>
       </div>
 

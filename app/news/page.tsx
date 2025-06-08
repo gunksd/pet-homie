@@ -14,6 +14,15 @@ export default async function NewsPage() {
 
   const news = [
     {
+      id: "5",
+      title: "春季宠物护理指南",
+      summary: "春天来了，如何为你的宠物做好季节性护理，包括换毛期护理、皮肤健康管理等",
+      image: "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=400&h=300&fit=crop",
+      category: "护理",
+      views: 3456,
+      publishedAt: "2小时前",
+    },
+    {
       id: "1",
       title: "小橘猫的日常护理",
       summary: "橘猫因其可爱的外表和温顺的性格深受喜爱",
