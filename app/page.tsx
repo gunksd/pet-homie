@@ -20,11 +20,11 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
             <Avatar className="border-2 border-white">
-              <AvatarImage src="/placeholder.svg?height=40&width=40" alt="用户头像" />
-              <AvatarFallback className="bg-white text-blue-600">李</AvatarFallback>
+              <AvatarImage src="/favicon.png" alt="管理员头像" />
+              <AvatarFallback className="bg-white text-blue-600">管</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="font-bold">早上好，李小明</h1>
+              <h1 className="font-bold">早上好，管理员</h1>
               <p className="text-sm opacity-90">今天是个照顾宠物的好日子</p>
             </div>
           </div>

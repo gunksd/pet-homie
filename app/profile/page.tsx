@@ -29,11 +29,11 @@ export default async function ProfilePage() {
 
       <div className="bg-blue-50 dark:bg-blue-950 p-6 flex items-center gap-4">
         <Avatar className="h-16 w-16 border-2 border-white dark:border-gray-800">
-          <AvatarImage src={user.avatar || "/placeholder.svg"} alt="用户头像" />
-          <AvatarFallback className="bg-primary/10 text-primary">{user.name.charAt(0)}</AvatarFallback>
+          <AvatarImage src="/favicon.png" alt="管理员头像" />
+          <AvatarFallback className="bg-primary/10 text-primary">管</AvatarFallback>
         </Avatar>
         <div>
-          <h2 className="font-bold text-lg text-foreground">{user.name}</h2>
+          <h2 className="font-bold text-lg text-foreground">管理员</h2>
           <p className="text-sm text-muted-foreground">铲屎官 · 已认证</p>
           <Button variant="link" className="p-0 h-auto text-primary">
             查看并编辑个人资料

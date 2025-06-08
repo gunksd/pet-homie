@@ -123,7 +123,7 @@ export async function signUp(name: string, email: string, password: string): Pro
       name,
       email,
       password, // 在实际项目中应该加密
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
+      avatar: "/favicon.png",
       createdAt: new Date(),
     }
 
@@ -204,10 +204,10 @@ export async function initializeDefaultUser(): Promise<void> {
 
     const defaultUser: User = {
       id: "1",
-      name: "宠物爱好者",
+      name: "管理员",
       email: "pet@example.com",
       password: "123456",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+      avatar: "/favicon.png",
       phone: "13800138000",
       createdAt: new Date("2024-01-01"),
     }

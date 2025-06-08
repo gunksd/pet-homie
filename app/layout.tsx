@@ -17,12 +17,12 @@ export const metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.svg",
-        type: "image/svg+xml",
+        url: "/favicon.png",
+        type: "image/png",
       },
     ],
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   generator: "v0.dev",
 }
@@ -35,10 +35,10 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="shortcut icon" href="/favicon.svg" />
-        <link rel="apple-touch-icon" href="/favicon.svg" />
-        <meta name="theme-color" content="#0ea5e9" />
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <meta name="theme-color" content="#f59e0b" />
       </head>
       <body className={cn("min-h-screen bg-background font-sans antialiased", fontSans.variable)}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>

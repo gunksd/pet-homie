@@ -122,7 +122,7 @@ export function PetReportDialog({ open, onOpenChange, report, petName }: PetRepo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[85vh] p-0 flex flex-col">
+      <DialogContent className="max-w-4xl h-[85vh] p-0 flex flex-col" hideCloseButton>
         <DialogHeader className="px-6 py-4 border-b bg-gradient-to-r from-blue-50 to-indigo-50 shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-bold flex items-center gap-2">🐾 {petName}的健康报告</DialogTitle>
